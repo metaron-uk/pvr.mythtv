@@ -197,7 +197,8 @@ namespace Myth
     bool UpdateRecordedWatchedStatus(uint32_t chanid, time_t recstartts, bool watched)
     {
       WSServiceVersion_t wsv = CheckService(WS_Dvr);
-      if (wsv.ranking >= 0x00040005) return UpdateRecordedWatchedStatus4_5(chanid, recstartts, watched);
+      //Hack to try using the 4.5 version of UpdateRecordedWatchedStatus if the version reported is 1.9
+      if (wsv.ranking >= 0x00040005 || wsv.ranking == 0x00010009 ) return UpdateRecordedWatchedStatus4_5(chanid, recstartts, watched);
       return false;
     }
 
