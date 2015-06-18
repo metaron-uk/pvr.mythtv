@@ -316,3 +316,75 @@ msgstr ""
 msgctxt "#30435"
 msgid "Record all new episodes (this channel)"
 msgstr ""
+
+# empty strings from id 30436 to 30450
+
+msgctxt "#30451"
+msgid "Unhandled rule"
+msgstr ""
+
+msgctxt "#30452"
+msgid "Record"
+msgstr ""
+
+msgctxt "#30453"
+msgid "Override"
+msgstr ""
+
+msgctxt "#30454"
+msgid "Don't record"
+msgstr ""
+
+msgctxt "#30460"
+msgid "Manual record"
+msgstr ""
+
+msgctxt "#30461"
+msgid "Record one showning"
+msgstr ""
+
+msgctxt "#30462"
+msgid "Record every week"
+msgstr ""
+
+msgctxt "#30463"
+msgid "Record every day"
+msgstr ""
+
+msgctxt "#30464"
+msgid "Record all shownings"
+msgstr ""
+
+msgctxt "#30465"
+msgid "Record this shownings"
+msgstr ""
+
+# empty strings from id 30466 to 30500
+
+msgctxt "#30501"
+msgid "Don't match duplicates"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Match duplicates using subtitle"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Match duplicates using description"
+msgstr ""
+
+msgctxt "#30504"
+msgid "Match duplicates using subtitle & description"
+msgstr ""
+
+msgctxt "#30505"
+msgid "Match duplicates using subtitle then description"
+msgstr ""
+
+msgctxt "#30506"
+msgid "Recordings never expire"
+msgstr ""
+
+msgctxt "#30507"
+msgid "Allow recordings to expire"
+msgstr ""
