@@ -1456,11 +1456,12 @@ const MythScheduleManager::RulePriorityList& MythScheduleHelper75::GetRulePriori
     char buf[4];
     _init = true;
     _list.reserve(200);
+    memset(buf, 0, sizeof(buf));
     for (int i = -99; i <= 99; ++i)
     {
       if (i)
       {
-        snprintf(buf, sizeof(buf), "%+2d", i);
+        snprintf(buf, sizeof(buf) - 1, "%+2d", i);
         _list.push_back(std::make_pair(i, buf));
       }
       else
