@@ -320,43 +320,51 @@ msgstr ""
 # empty strings from id 30436 to 30450
 
 msgctxt "#30451"
-msgid "Unhandled rule"
+msgid "Unhandled"
 msgstr ""
 
 msgctxt "#30452"
-msgid "Record"
+msgid "Upcoming"
 msgstr ""
 
 msgctxt "#30453"
-msgid "Override"
+msgid "Overriden"
 msgstr ""
 
 msgctxt "#30454"
 msgid "Don't record"
 msgstr ""
 
+msgctxt "#30455"
+msgid "Upcoming manual"
+msgstr ""
+
+msgctxt "#30456"
+msgid "Zombie"
+msgstr ""
+
 msgctxt "#30460"
-msgid "Manual record"
+msgid "Manual"
 msgstr ""
 
 msgctxt "#30461"
-msgid "Record one showning"
+msgid "Record one"
 msgstr ""
 
 msgctxt "#30462"
-msgid "Record every week"
+msgid "Record weekly"
 msgstr ""
 
 msgctxt "#30463"
-msgid "Record every day"
+msgid "Record daily"
 msgstr ""
 
 msgctxt "#30464"
-msgid "Record all shownings"
+msgid "Record all"
 msgstr ""
 
 msgctxt "#30465"
-msgid "Record this shownings"
+msgid "Record this"
 msgstr ""
 
 # empty strings from id 30466 to 30500

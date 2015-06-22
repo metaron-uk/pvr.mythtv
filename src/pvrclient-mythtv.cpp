@@ -29,6 +29,7 @@
 #include <time.h>
 #include <set>
 #include <assert.h>
+#include <xbmc/xbmc_pvr_types.h>
 
 using namespace ADDON;
 using namespace PLATFORM;
@@ -1493,7 +1494,18 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.firstDay = 0; // using startTime
     tag.iWeekdays = PVR_WEEKDAY_NONE; // not implemented
     tag.iPreventDuplicateEpisodes = (*it)->dupMethod;
-    tag.iEpgUid = 0; // undefined
+
+    switch ((*it)->timerType)
+    {
+      case TIMER_TYPE_UPCOMING:
+      case TIMER_TYPE_OVERRIDE:
+      case TIMER_TYPE_UPCOMING_MANUAL:
+        tag.iEpgUid = MythEPGInfo::MakeBroadcastID(FindPVRChannelUid((*it)->chanid), (*it)->startTime);
+        break;
+      default:
+        tag.iEpgUid = 0;
+    }
+
     tag.iMarginStart = (*it)->startOffset;
     tag.iMarginEnd = (*it)->endOffset;
     int genre = m_categories.Category((*it)->category);
@@ -1505,8 +1517,9 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     m_PVRtimerMemorandum.insert(std::make_pair((unsigned int&)tag.iClientIndex, pTag));
     PVR->TransferTimerEntry(handle, &tag);
     if (g_bExtraDebug)
-      XBMC->Log(LOG_DEBUG, "%s: #%u: type %u state %d parent %u autoexpire %d", __FUNCTION__,
-              tag.iClientIndex, tag.iTimerType, (int)tag.state, tag.iParentClientIndex, tag.iLifetime);
+      XBMC->Log(LOG_DEBUG, "%s: #%u: IN=%d RS=%d type %u state %d parent %u autoexpire %d", __FUNCTION__,
+              tag.iClientIndex, (*it)->isInactive, (*it)->recordingStatus,
+              tag.iTimerType, (int)tag.state, tag.iParentClientIndex, tag.iLifetime);
   }
 
   if (g_bExtraDebug)
@@ -1585,14 +1598,19 @@ PVR_ERROR PVRClientMythTV::DeleteTimer(const PVR_TIMER &timer, bool bDeleteSched
     CLockObject lock(m_lock);
     if (m_liveStream && m_liveStream->IsLiveRecording())
     {
-      MythScheduledPtr recording = m_scheduleManager->FindUpComingByIndex(timer.iClientIndex);
-      if (this->IsMyLiveRecording(*recording))
+      MythRecordingRuleNodePtr node = m_scheduleManager->FindRuleByIndex(timer.iClientIndex);
+      if (node)
       {
-        XBMC->Log(LOG_DEBUG, "%s: Timer %u is a quick recording. Toggling Record off", __FUNCTION__, timer.iClientIndex);
-        if (m_liveStream->KeepLiveRecording(false))
-          return PVR_ERROR_NO_ERROR;
-        else
-          return PVR_ERROR_FAILED;
+        MythScheduleList reclist = m_scheduleManager->FindUpComingByRuleId(node->GetRule().RecordID());
+        MythScheduleList::const_iterator it = reclist.begin();
+        if (it != reclist.end() && it->second && IsMyLiveRecording(*(it->second)))
+        {
+          XBMC->Log(LOG_DEBUG, "%s: Timer %u is a quick recording. Toggling Record off", __FUNCTION__, timer.iClientIndex);
+          if (m_liveStream->KeepLiveRecording(false))
+            return PVR_ERROR_NO_ERROR;
+          else
+            return PVR_ERROR_FAILED;
+        }
       }
     }
   }

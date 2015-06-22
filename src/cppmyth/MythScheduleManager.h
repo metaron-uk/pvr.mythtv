@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -34,17 +34,19 @@
 
 typedef enum
 {
-  TIMER_TYPE_ONCE_MANUAL_SEARCH       = 1,// Manual record
-  TIMER_TYPE_THIS_SHOWING             = 2,// Record This showning
-  TIMER_TYPE_ONE_SHOWING,                 // Record one showning
-  TIMER_TYPE_ONE_SHOWING_WEEKLY,          // Record one showing every week
-  TIMER_TYPE_ONE_SHOWING_DAILY,           // Record one showing every day
-  TIMER_TYPE_ALL_SHOWINGS,                // Record all showings
-  // KEEP LAST
-  TIMER_TYPE_RECORD,                      // Record
-  TIMER_TYPE_OVERRIDE,                    // Override
-  TIMER_TYPE_DONT_RECORD,                 // Don't record
-  TIMER_TYPE_UNHANDLED_RULE               // Unhandled rule
+  TIMER_TYPE_MANUAL_SEARCH  = 1,  // Manual record
+  TIMER_TYPE_THIS_SHOWING   = 2,  // Record This showing
+  TIMER_TYPE_RECORD_ONE,          // Record one showning
+  TIMER_TYPE_RECORD_WEEKLY,       // Record one showing every week
+  TIMER_TYPE_RECORD_DAILY,        // Record one showing every day
+  TIMER_TYPE_RECORD_ALL,          // Record all showings
+  // Keep last
+  TIMER_TYPE_UPCOMING,            // Upcoming
+  TIMER_TYPE_OVERRIDE,            // Override
+  TIMER_TYPE_DONT_RECORD,         // Don't record
+  TIMER_TYPE_UNHANDLED,           // Unhandled rule
+  TIMER_TYPE_UPCOMING_MANUAL,     // Upcoming manual
+  TIMER_TYPE_ZOMBIE,              // Zombie
 } TimerTypeId;
 
 struct MythTimerEntry
@@ -71,7 +73,7 @@ struct MythTimerEntry
   uint32_t      parentIndex;
   Myth::RS_t    recordingStatus;
   MythTimerEntry()
-  : isInactive(true), timerType(TIMER_TYPE_UNHANDLED_RULE)
+  : isInactive(false), timerType(TIMER_TYPE_UNHANDLED)
   , chanid(0), startTime(0), endTime(0), startOffset(0), endOffset(0), priority(0)
   , dupMethod(Myth::DM_CheckNone), autoExpire(false), firstShowing(false), recordingGroup(0)
   , entryIndex(0), parentIndex(0), recordingStatus(Myth::RS_UNKNOWN) { }
@@ -201,7 +203,7 @@ public:
   public:
     friend class MythScheduleManager;
 
-    VersionHelper() {}
+    VersionHelper() { }
     virtual ~VersionHelper();
 
     virtual const std::vector<TimerType>& GetTimerTypes() const = 0;
@@ -216,8 +218,11 @@ public:
 
     virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const = 0;
     virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const = 0;
+    virtual bool FillTimerEntry(MythTimerEntry& entry, const MythProgramInfo& recording) const = 0;
     virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo) = 0;
     virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate) = 0;
+    virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;
+    virtual MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;
 
     // deprecated
     virtual RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const = 0;
@@ -228,6 +233,9 @@ public:
     virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo) = 0;
   };
 
+  static uint32_t MakeIndex(const MythProgramInfo& recording);
+  static uint32_t MakeIndex(const MythRecordingRule& rule);
+
 private:
   mutable PLATFORM::CMutex m_lock;
   Myth::Control *m_control;
@@ -235,11 +243,6 @@ private:
   int m_protoVersion;
   VersionHelper *m_versionHelper;
   void Setup();
-
-  static uint32_t MakeIndex(const MythProgramInfo& recording);
-  static uint32_t MakeIndex(const MythRecordingRule& rule);
-  MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythScheduledPtr& recording);
-  MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythScheduledPtr& recording);
 
   // The list of rule nodes
   typedef std::list<MythRecordingRuleNodePtr> NodeList;
@@ -268,89 +271,4 @@ private:
 //// VersionHelper
 ////
 
-inline MythScheduleManager::VersionHelper::~VersionHelper() {
-}
-
-// No helper
-
-class MythScheduleHelperNoHelper : public MythScheduleManager::VersionHelper {
-public:
-
-  virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
-  virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
-  virtual int GetRulePriorityDefault() const { return 0; }
-  virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckNone; }
-  virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationDefault() const { return 0; }
-  virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
-  virtual int GetRuleRecordingGroupId(const std::string& name) const;
-  virtual const std::string& GetRuleRecordingGroupName(int id) const;
-  virtual int GetRuleRecordingGroupDefault() const;
-
-  virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewSingleRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-};
-
-// Base 0.26
-
-class MythScheduleHelper75 : public MythScheduleHelperNoHelper {
-public:
-  MythScheduleHelper75(MythScheduleManager *manager, Myth::Control *control)
-  : m_manager(manager)
-  , m_control(control) {
-  }
-
-  virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
-  virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
-  virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckSubtitleAndDescription; }
-  virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationDefault() const { return 1; }
-  virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
-
-  virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewSingleRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-protected:
-  MythScheduleManager *m_manager;
-  Myth::Control *m_control;
-};
-
-// News in 0.27
-
-class MythScheduleHelper76 : public MythScheduleHelper75 {
-public:
-  MythScheduleHelper76(MythScheduleManager *manager, Myth::Control *control)
-  : MythScheduleHelper75(manager, control) {
-  }
-
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-};
+inline MythScheduleManager::VersionHelper::~VersionHelper() { }
