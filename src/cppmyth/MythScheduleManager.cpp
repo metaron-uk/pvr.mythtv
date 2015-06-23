@@ -24,6 +24,7 @@
 
 #include <cstdio>
 #include <cassert>
+#include <math.h>
 
 #define RECGROUP_ID_NONE    0
 #define RECGROUP_DFLT_NAME  "Default"
@@ -58,6 +59,16 @@ static uint_fast32_t hashvalue(uint_fast32_t maxsize, const char *value)
   }
 
   return h % maxsize;
+}
+
+static inline void timeadd(time_t *time, double diffsec)
+{
+  double dh = trunc(diffsec / 3600);
+  struct tm newtm;
+  localtime_r(time, &newtm);
+  newtm.tm_hour += (int)dh;
+  newtm.tm_sec += (int)(diffsec - dh * 3600);
+  *time = mktime(&newtm);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2289,8 +2300,33 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   entry.title = rule.Title();
   entry.chanid = rule.ChannelID();
   entry.callsign = rule.Callsign();
-  entry.startTime = rule.StartTime();
-  entry.endTime = rule.EndTime();
+
+  switch (entry.timerType)
+  {
+    case TIMER_TYPE_ALL_SHOWINGS:
+    case TIMER_TYPE_ONE_SHOWING:
+    case TIMER_TYPE_ONE_SHOWING_DAILY:
+    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
+    case TIMER_TYPE_UNHANDLED_RULE:
+      if (difftime(rule.NextRecording(), 0) > 0)
+      {
+        // fill timeslot starting at next recording
+        entry.startTime = entry.endTime = rule.NextRecording();
+        timeadd(&entry.endTime, difftime(rule.EndTime(), rule.StartTime()));
+        break;
+      }
+      else if (difftime(rule.LastRecorded(), 0) > 0)
+      {
+        // fill timeslot starting at last recorded
+        entry.startTime = entry.endTime = rule.LastRecorded();
+        timeadd(&entry.endTime, difftime(rule.EndTime(), rule.StartTime()));
+        break;
+      }
+    default:
+      entry.startTime = rule.StartTime();
+      entry.endTime = rule.EndTime();
+  }
+
   entry.title = rule.Title();
   entry.startOffset = rule.StartOffset();
   entry.endOffset = rule.EndOffset();
