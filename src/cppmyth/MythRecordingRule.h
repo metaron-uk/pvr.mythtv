@@ -131,6 +131,11 @@ public:
   std::string RecordingProfile() const;
   void SetRecordingProfile(const std::string& profile);
 
+  time_t NextRecording() const;
+  time_t LastRecorded() const;
+  time_t LastDeleted() const;
+  uint32_t AverageDelay() const;
+
 private:
   Myth::RecordSchedulePtr m_recordSchedule;
 };

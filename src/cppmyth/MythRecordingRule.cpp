@@ -402,3 +402,23 @@ void MythRecordingRule::SetRecordingProfile(const std::string& profile)
 {
   m_recordSchedule->recProfile = profile;
 }
+
+time_t MythRecordingRule::NextRecording() const
+{
+  return m_recordSchedule->nextRecording;
+}
+
+time_t MythRecordingRule::LastRecorded() const
+{
+  return m_recordSchedule->lastRecorded;
+}
+
+time_t MythRecordingRule::LastDeleted() const
+{
+  return m_recordSchedule->lastDeleted;
+}
+
+uint32_t MythRecordingRule::AverageDelay() const
+{
+  return m_recordSchedule->averageDelay;
+}
