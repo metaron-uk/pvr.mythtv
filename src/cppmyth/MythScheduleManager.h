@@ -1,6 +1,6 @@
 #pragma once
 /*
- *      Copyright (C) 2005-2014 Team XBMC
+ *      Copyright (C) 2005-2015 Team XBMC
  *      http://www.xbmc.org
  *
  *  This Program is free software; you can redistribute it and/or modify
@@ -201,7 +201,7 @@ public:
   public:
     friend class MythScheduleManager;
 
-    VersionHelper() {}
+    VersionHelper() { }
     virtual ~VersionHelper();
 
     virtual const std::vector<TimerType>& GetTimerTypes() const = 0;
@@ -266,89 +266,4 @@ private:
 //// VersionHelper
 ////
 
-inline MythScheduleManager::VersionHelper::~VersionHelper() {
-}
-
-// No helper
-
-class MythScheduleHelperNoHelper : public MythScheduleManager::VersionHelper {
-public:
-
-  virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
-  virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
-  virtual int GetRulePriorityDefault() const { return 0; }
-  virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckNone; }
-  virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationDefault() const { return 0; }
-  virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
-  virtual int GetRuleRecordingGroupId(const std::string& name) const;
-  virtual const std::string& GetRuleRecordingGroupName(int id) const;
-  virtual int GetRuleRecordingGroupDefault() const;
-
-  virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewSingleRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-};
-
-// Base 0.26
-
-class MythScheduleHelper75 : public MythScheduleHelperNoHelper {
-public:
-  MythScheduleHelper75(MythScheduleManager *manager, Myth::Control *control)
-  : m_manager(manager)
-  , m_control(control) {
-  }
-
-  virtual const std::vector<MythScheduleManager::TimerType>& GetTimerTypes() const;
-  virtual const MythScheduleManager::RulePriorityList& GetRulePriorityList() const;
-  virtual const MythScheduleManager::RuleDupMethodList& GetRuleDupMethodList() const;
-  virtual int GetRuleDupMethodDefault() const { return Myth::DM_CheckSubtitleAndDescription; }
-  virtual const MythScheduleManager::RuleExpirationList& GetRuleExpirationList() const;
-  virtual int GetRuleExpirationDefault() const { return 1; }
-  virtual const MythScheduleManager::RuleRecordingGroupList& GetRuleRecordingGroupList() const;
-
-  virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewSingleRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-protected:
-  MythScheduleManager *m_manager;
-  Myth::Control *m_control;
-};
-
-// News in 0.27
-
-class MythScheduleHelper76 : public MythScheduleHelper75 {
-public:
-  MythScheduleHelper76(MythScheduleManager *manager, Myth::Control *control)
-  : MythScheduleHelper75(manager, control) {
-  }
-
-  virtual bool FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
-
-  // deprecated
-  virtual MythScheduleManager::RuleSummaryInfo GetSummaryInfo(const MythRecordingRule& rule) const;
-  virtual MythRecordingRule NewDailyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewWeeklyRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewChannelRecord(const MythEPGInfo& epgInfo);
-  virtual MythRecordingRule NewOneRecord(const MythEPGInfo& epgInfo);
-};
+inline MythScheduleManager::VersionHelper::~VersionHelper() { }

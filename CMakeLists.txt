@@ -47,6 +47,9 @@ set(MYTHTV_SOURCES src/avinfo.cpp
                    src/guidialogyesno.cpp
                    src/pvrclient-mythtv.cpp
                    src/cppmyth/MythScheduleManager.cpp
+                   src/cppmyth/MythScheduleHelperNoHelper.cpp
+                   src/cppmyth/MythScheduleHelper75.cpp
+                   src/cppmyth/MythScheduleHelper76.cpp
                    src/cppmyth/MythEPGInfo.cpp
                    src/cppmyth/MythRecordingRule.cpp
                    src/cppmyth/MythProgramInfo.cpp
