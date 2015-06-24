@@ -113,6 +113,9 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   entry.title = rule.Title();
   entry.chanid = rule.ChannelID();
   entry.callsign = rule.Callsign();
+  if (!(rule.Filter() & Myth::FM_ThisChannel))
+    entry.isAnyChannel = true; // Identify this as an AnyChannel rule
+
 
   switch (entry.timerType)
   {
@@ -225,7 +228,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
-          rule.SetFilter(Myth::FM_ThisChannel);
+          if (!entry.isAnyChannel) rule.SetFilter(Myth::FM_ThisChannel);
           rule.SetChannelID(entry.chanid);
           rule.SetCallsign(entry.callsign);
         }
@@ -278,7 +281,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
-          rule.SetFilter(Myth::FM_ThisChannel);
+          if (!entry.isAnyChannel) rule.SetFilter(Myth::FM_ThisChannel);
           rule.SetChannelID(entry.chanid);
           rule.SetCallsign(entry.callsign);
         }
@@ -332,7 +335,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
-          rule.SetFilter(Myth::FM_ThisChannel);
+          if (!entry.isAnyChannel) rule.SetFilter(Myth::FM_ThisChannel);
           rule.SetChannelID(entry.chanid);
           rule.SetCallsign(entry.callsign);
         }
@@ -351,7 +354,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       if (!entry.epgInfo.IsNull())
       {
         rule.SetType(Myth::RT_AllRecord);
-        rule.SetFilter(Myth::FM_ThisChannel);
+        if (!entry.isAnyChannel) rule.SetFilter(Myth::FM_ThisChannel);
         rule.SetSearchType(Myth::ST_NoSearch);
         rule.SetChannelID(entry.epgInfo.ChannelID());
         rule.SetStartTime(entry.epgInfo.StartTime());
@@ -372,7 +375,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
-          rule.SetFilter(Myth::FM_ThisChannel);
+          if (!entry.isAnyChannel) rule.SetFilter(Myth::FM_ThisChannel);
           rule.SetChannelID(entry.chanid);
           rule.SetCallsign(entry.callsign);
         }

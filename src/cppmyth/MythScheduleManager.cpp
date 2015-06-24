@@ -749,6 +749,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecordingRule(uint32_t
           handle.SetRecordingGroup(newrule.RecordingGroup());
           handle.SetCheckDuplicatesInType(newrule.CheckDuplicatesInType());
           handle.SetDuplicateControlMethod(newrule.DuplicateControlMethod());
+          handle.SetFilter(newrule.Filter());
         }
         break;
     }

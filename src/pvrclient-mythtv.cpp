@@ -1437,7 +1437,10 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
 
     tag.iClientIndex = (*it)->entryIndex;
     tag.iParentClientIndex = (*it)->parentIndex;
-    tag.iClientChannelUid = FindPVRChannelUid((*it)->chanid);
+    if ((*it)->isAnyChannel)
+      tag.iClientChannelUid = -1; //How PVR core identifies an 'Any Channel' rule
+    else
+      tag.iClientChannelUid = FindPVRChannelUid((*it)->chanid);
     tag.startTime = (*it)->startTime;
     tag.endTime = (*it)->endTime;
 

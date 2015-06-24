@@ -386,6 +386,11 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
     case Myth::RT_WeeklyRecord:
       entry.timerType = TIMER_TYPE_ONE_SHOWING_WEEKLY;
       break;
+    case Myth::RT_AllRecord:
+      //NB: I seem to remember reading on the mythv forum that the reason for deprectating the RT_ChannelRecord
+      //type was that it could also be achieved using AllRecord and 'This Channel' filter setting.
+      if (!(rule.Filter() & Myth::FM_ThisChannel))
+        entry.isAnyChannel = true; // Identify as AnyChannel rule, then fall through to standard case
     case Myth::RT_ChannelRecord:
       entry.timerType = TIMER_TYPE_ALL_SHOWINGS;
       if (rule.SearchType() == Myth::ST_NoSearch)
@@ -728,7 +733,10 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
     {
       if (!entry.epgInfo.IsNull())
       {
-        rule.SetType(Myth::RT_ChannelRecord);
+        if (entry.HasChannel() && !entry.isAnyChannel)
+          rule.SetType(Myth::RT_ChannelRecord);
+        else
+          rule.SetType(Myth::RT_AllRecord);
         rule.SetSearchType(Myth::ST_NoSearch);
         rule.SetChannelID(entry.epgInfo.ChannelID());
         rule.SetStartTime(entry.epgInfo.StartTime());
@@ -745,7 +753,10 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       }
       if (!entry.epgSearch.empty())
       {
-        rule.SetType(Myth::RT_ChannelRecord);
+        if (entry.HasChannel() && !entry.isAnyChannel)
+          rule.SetType(Myth::RT_ChannelRecord);
+        else
+          rule.SetType(Myth::RT_AllRecord);
         rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
