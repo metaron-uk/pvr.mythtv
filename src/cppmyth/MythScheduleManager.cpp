@@ -224,6 +224,7 @@ MythTimerEntryList MythScheduleManager::GetTimerEntries()
         entry->description = "";
         entry->chanid = it->second->ChannelID();
         entry->callsign = it->second->Callsign();
+        entry->isAnyChannel = false; //An upcoming recording is on a particular channel!
         entry->startTime = it->second->StartTime();
         entry->endTime = it->second->EndTime();
         entry->title = it->second->Title();
