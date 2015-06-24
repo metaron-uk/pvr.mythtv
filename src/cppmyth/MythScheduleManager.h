@@ -54,6 +54,7 @@ struct MythTimerEntry
   MythEPGInfo   epgInfo;
   uint32_t      chanid;
   std::string   callsign;
+  bool          isAnyChannel;
   time_t        startTime;
   time_t        endTime;
   std::string   epgSearch;
@@ -72,7 +73,7 @@ struct MythTimerEntry
   Myth::RS_t    recordingStatus;
   MythTimerEntry()
   : isInactive(true), timerType(TIMER_TYPE_UNHANDLED_RULE)
-  , chanid(0), startTime(0), endTime(0), startOffset(0), endOffset(0), priority(0)
+  , chanid(0), isAnyChannel(false), startTime(0), endTime(0), startOffset(0), endOffset(0), priority(0)
   , dupMethod(Myth::DM_CheckNone), autoExpire(false), firstShowing(false), recordingGroup(0)
   , entryIndex(0), parentIndex(0), recordingStatus(Myth::RS_UNKNOWN) { }
   bool HasChannel() const { return (chanid > 0 && !callsign.empty() ? true : false); }

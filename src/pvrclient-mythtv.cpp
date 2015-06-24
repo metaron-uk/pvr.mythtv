@@ -1703,6 +1703,12 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
       hasChannel = false;
     }
   }
+
+  if (!hasChannel)
+  {
+    entry.isAnyChannel = true; //Create an 'Any Channel' recording rule
+  }
+
   // Fill others
   if (hasTimeslot)
   {
