@@ -177,6 +177,24 @@ MythTimerEntryList MythScheduleManager::GetTimerEntries()
   {
     if ((*it)->IsOverrideRule())
       continue;
+    if (!m_showNotRecording)
+    {
+      time_t ruleNextActive;
+      if (difftime((*it)->m_rule.NextRecording(), 0) > 0) 
+        ruleNextActive = (*it)->m_rule.NextRecording();
+      else if (difftime((*it)->m_rule.LastRecorded(), 0) > 0) 
+        ruleNextActive = (*it)->m_rule.LastRecorded();
+      else 
+        ruleNextActive = (*it)->m_rule.StartTime();
+
+      time_t now = time(NULL);
+      if (difftime(ruleNextActive, now) < -72000 ) //60s*60min*24h = 7200
+      {
+        XBMC->Log(LOG_DEBUG, "%s: Skipping Rule %s on %s as more than 24h old", 
+          __FUNCTION__, (*it)->m_rule.Title().c_str(), (*it)->m_rule.Callsign().c_str());
+        continue;
+      }
+    }
     MythTimerEntryPtr entry = MythTimerEntryPtr(new MythTimerEntry());
     if (m_versionHelper->FillTimerEntry(*entry, **it))
     {
@@ -198,8 +216,9 @@ MythTimerEntryList MythScheduleManager::GetTimerEntries()
       case Myth::RS_PREVIOUS_RECORDING: //Previoulsy recorded but no longer in the library
         if (!m_showNotRecording)
         {
-          XBMC->Log(LOG_DEBUG, "%s: Skipping %s:%s on %s because status %d and m_showNotRecording=%d", __FUNCTION__,
-                    it->second->Title().c_str(), it->second->Subtitle().c_str(), it->second->ChannelName().c_str(), it->second->Status(), m_showNotRecording);
+          XBMC->Log(LOG_DEBUG, "%s: Skipping %s:%s on %s as status %d (not recording)", 
+                __FUNCTION__, it->second->Title().c_str(), it->second->Subtitle().c_str(),
+                it->second->ChannelName().c_str(), it->second->Status());
           continue;
         }
       default:
@@ -753,6 +772,9 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecordingRule(uint32_t
           handle.SetFilter(newrule.Filter());
           handle.SetChannelID(newrule.ChannelID());
           handle.SetCallsign(newrule.Callsign());
+          handle.SetSearchType(newrule.SearchType());
+          handle.SetDescription(newrule.Description());
+          handle.SetTitle(newrule.Title());
         }
         break;
     }

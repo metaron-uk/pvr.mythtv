@@ -40,6 +40,7 @@ typedef enum
   TIMER_TYPE_ONE_SHOWING_WEEKLY,          // Record one showing every week
   TIMER_TYPE_ONE_SHOWING_DAILY,           // Record one showing every day
   TIMER_TYPE_ALL_SHOWINGS,                // Record all showings
+  TIMER_TYPE_TEXT_SEARCH,                 // EPG Text Search All Showings
   // KEEP LAST
   TIMER_TYPE_RECORD,                      // Record
   TIMER_TYPE_OVERRIDE,                    // Override
@@ -58,9 +59,13 @@ struct MythTimerEntry
   time_t        startTime;
   time_t        endTime;
   std::string   epgSearch;
+  bool          isFullTextSearch;
   std::string   title;
+  std::string   subtitle;
   std::string   description;
   std::string   category;
+  uint32_t      season;
+  uint32_t      episode;
   int           startOffset;
   int           endOffset;
   int           priority;
@@ -73,7 +78,8 @@ struct MythTimerEntry
   Myth::RS_t    recordingStatus;
   MythTimerEntry()
   : isInactive(true), timerType(TIMER_TYPE_UNHANDLED_RULE)
-  , chanid(0), isAnyChannel(false), startTime(0), endTime(0), startOffset(0), endOffset(0), priority(0)
+  , chanid(0), isAnyChannel(false), startTime(0), endTime(0), isFullTextSearch(false)
+  , season(0), episode(0), startOffset(0), endOffset(0), priority(0)
   , dupMethod(Myth::DM_CheckNone), autoExpire(false), firstShowing(false), recordingGroup(0)
   , entryIndex(0), parentIndex(0), recordingStatus(Myth::RS_UNKNOWN) { }
   bool HasChannel() const { return (chanid > 0 && !callsign.empty() ? true : false); }

@@ -60,7 +60,6 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupDefault()));
 
     typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_THIS_SHOWING,
-            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -79,16 +78,32 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
 
     typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ONE_SHOWING,
             PVR_TIMER_TYPE_IS_REPEATING |
-            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
-            PVR_TIMER_TYPE_SUPPORTS_START_END_TIME |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
             PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP |
-            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH,
+            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES,
             XBMC->GetLocalizedString(30461),
+            GetRulePriorityList(),
+            GetRulePriorityDefault(),
+            GetRuleDupMethodList(),
+            GetRuleDupMethodDefault(),
+            GetRuleExpirationList(),
+            GetRuleExpirationDefault(),
+            GetRuleRecordingGroupList(),
+            GetRuleRecordingGroupDefault()));
+
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ALL_SHOWINGS,
+            PVR_TIMER_TYPE_IS_REPEATING |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+            PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
+            PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
+            PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP |
+            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES,
+            XBMC->GetLocalizedString(30464),
             GetRulePriorityList(),
             GetRulePriorityDefault(),
             GetRuleDupMethodList(),
@@ -107,14 +122,12 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
-            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP |
-            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH,
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
             XBMC->GetLocalizedString(30462),
             GetRulePriorityList(),
             GetRulePriorityDefault(),
-            GetRuleDupMethodList(),
-            GetRuleDupMethodDefault(),
+            MythScheduleManager::RuleDupMethodList(), // empty list
+            0, // Check none
             GetRuleExpirationList(),
             GetRuleExpirationDefault(),
             GetRuleRecordingGroupList(),
@@ -129,20 +142,18 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
-            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP |
-            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH,
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
             XBMC->GetLocalizedString(30463),
             GetRulePriorityList(),
             GetRulePriorityDefault(),
-            GetRuleDupMethodList(),
-            GetRuleDupMethodDefault(),
+            MythScheduleManager::RuleDupMethodList(), // empty list
+            0, // Check none
             GetRuleExpirationList(),
             GetRuleExpirationDefault(),
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ALL_SHOWINGS,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_TEXT_SEARCH,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
@@ -151,8 +162,9 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
             PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP |
             PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH,
-            XBMC->GetLocalizedString(30464),
+            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
+            PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH,
+            XBMC->GetLocalizedString(30466),
             GetRulePriorityList(),
             GetRulePriorityDefault(),
             GetRuleDupMethodList(),
@@ -378,6 +390,7 @@ bool MythScheduleHelper75::SameTimeslot(const MythRecordingRule& first, const My
 bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const
 {
   MythRecordingRule rule = node.GetRule();
+  XBMC->Log(LOG_DEBUG,"%s (MythScheduleHelper75): %u (%s:%s)", __FUNCTION__, rule.RecordID(), rule.Title().c_str(), rule.Subtitle().c_str());
   switch (rule.Type())
   {
     case Myth::RT_DailyRecord:
@@ -410,6 +423,8 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       break;
     case Myth::RT_OneRecord:
       entry.timerType = TIMER_TYPE_ONE_SHOWING;
+      if (!(rule.Filter() & Myth::FM_ThisChannel))
+        entry.isAnyChannel = true; // Identify as AnyChannel rule, then fall through to standard case
       break;
     case Myth::RT_DontRecord:
       entry.timerType = TIMER_TYPE_DONT_RECORD;
@@ -437,9 +452,53 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   entry.title = rule.Title();
   entry.chanid = rule.ChannelID();
   entry.callsign = rule.Callsign();
-  entry.startTime = rule.StartTime();
-  entry.endTime = rule.EndTime();
-  entry.title = rule.Title();
+
+  MythScheduleList recordings;
+  switch (entry.timerType)
+  {
+    case TIMER_TYPE_ALL_SHOWINGS:
+    case TIMER_TYPE_ONE_SHOWING:
+    case TIMER_TYPE_ONE_SHOWING_DAILY:
+    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
+    case TIMER_TYPE_UNHANDLED_RULE:
+      if (difftime(rule.NextRecording(), 0) > 0)
+      {
+        // fill timeslot starting at next recording
+        entry.startTime = entry.endTime = rule.NextRecording();
+        timeadd(&entry.endTime, difftime(rule.EndTime(), rule.StartTime()));
+      }
+      else if (difftime(rule.LastRecorded(), 0) > 0)
+      {
+        // fill timeslot starting at last recorded
+        entry.startTime = entry.endTime = rule.LastRecorded();
+        timeadd(&entry.endTime, difftime(rule.EndTime(), rule.StartTime()));
+      }
+      else
+      {
+        entry.startTime = rule.StartTime();
+        entry.endTime = rule.EndTime();
+      }
+      //Mythbackend doesn't appear to consider currently active recordings, so check for one
+      recordings = m_manager->FindUpComingByRuleId(rule.RecordID());
+      for (MythScheduleList::const_reverse_iterator it = recordings.rbegin(); it !=recordings.rend(); ++it)
+      {
+        if ( (it->second->Status() == Myth::RS_RECORDING) ||
+             (it->second->Status() == Myth::RS_TUNING) )
+        {
+
+            entry.recordingStatus = it->second->Status();
+            entry.startTime = it->second->StartTime();
+            entry.endTime = it->second->EndTime();
+            XBMC->Log(LOG_DEBUG,"%s: Found active recording for rule %u", __FUNCTION__, rule.RecordID());
+            break;
+        }
+      }
+      break;
+    default:
+      entry.startTime = rule.StartTime();
+      entry.endTime = rule.EndTime();
+  }
+
   entry.startOffset = rule.StartOffset();
   entry.endOffset = rule.EndOffset();
   entry.dupMethod = rule.DuplicateControlMethod();

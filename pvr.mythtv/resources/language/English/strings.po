@@ -320,7 +320,7 @@ msgstr ""
 # empty strings from id 30436 to 30450
 
 msgctxt "#30451"
-msgid "Unhandled rule"
+msgid "Unhandled Rule"
 msgstr ""
 
 msgctxt "#30452"
@@ -336,30 +336,34 @@ msgid "Don't record"
 msgstr ""
 
 msgctxt "#30460"
-msgid "Manual record"
+msgid "Manual"
 msgstr ""
 
 msgctxt "#30461"
-msgid "Record one showning"
+msgid "Once (This title)"
 msgstr ""
 
 msgctxt "#30462"
-msgid "Record every week"
+msgid "Weekly (This day and time)"
 msgstr ""
 
 msgctxt "#30463"
-msgid "Record every day"
+msgid "Daily (This time)"
 msgstr ""
 
 msgctxt "#30464"
-msgid "Record all shownings"
+msgid "Series (Any time)"
 msgstr ""
 
 msgctxt "#30465"
-msgid "Record this shownings"
+msgid "This Showing"
 msgstr ""
 
-# empty strings from id 30466 to 30500
+msgctxt "#30466"
+msgid "Text Search"
+msgstr ""
+
+# empty strings from id 30467 to 30500
 
 msgctxt "#30501"
 msgid "Don't match duplicates"
