@@ -1690,8 +1690,8 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
       hasEpg = false;
     }
   }
-  // Fill channel
-  if (!hasEpg && hasChannel)
+  // Fill channel (over-rides Epg if user has selected an alternative channel)
+  if (hasChannel)
   {
     MythChannel channel = FindChannel(timer.iClientChannelUid);
     if (!channel.IsNull())
@@ -1706,10 +1706,9 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
       hasChannel = false;
     }
   }
-
-  if (!hasChannel)
+  else
   {
-    entry.isAnyChannel = true; //Create an 'Any Channel' recording rule
+    entry.isAnyChannel = true; //Create an 'Any Channel' rule
   }
 
   // Fill others

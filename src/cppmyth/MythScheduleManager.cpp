@@ -751,6 +751,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecordingRule(uint32_t
           handle.SetCheckDuplicatesInType(newrule.CheckDuplicatesInType());
           handle.SetDuplicateControlMethod(newrule.DuplicateControlMethod());
           handle.SetFilter(newrule.Filter());
+          handle.SetChannelID(newrule.ChannelID());
+          handle.SetCallsign(newrule.Callsign());
         }
         break;
     }
