@@ -1475,6 +1475,9 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     case Myth::RS_LOW_DISKSPACE:
       tag.state = PVR_TIMER_STATE_ERROR;
       break;
+    case Myth::RS_INACTIVE:
+      tag.state = PVR_TIMER_STATE_DISABLED;
+      break;
     default:
       if ((*it)->isInactive)
         tag.state = PVR_TIMER_STATE_DISABLED;
