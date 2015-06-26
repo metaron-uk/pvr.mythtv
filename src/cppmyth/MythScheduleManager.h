@@ -34,18 +34,18 @@
 
 typedef enum
 {
-  TIMER_TYPE_ONCE_MANUAL_SEARCH       = 1,// Manual record
-  TIMER_TYPE_THIS_SHOWING             = 2,// Record This showning
-  TIMER_TYPE_ONE_SHOWING,                 // Record one showning
-  TIMER_TYPE_ONE_SHOWING_WEEKLY,          // Record one showing every week
-  TIMER_TYPE_ONE_SHOWING_DAILY,           // Record one showing every day
-  TIMER_TYPE_ALL_SHOWINGS,                // Record all showings
-  TIMER_TYPE_TEXT_SEARCH,                 // EPG Text Search All Showings
+  TIMER_TYPE_MANUAL_SEARCH  = 1,  // Manual record
+  TIMER_TYPE_THIS_SHOWING   = 2,  // Record This showing
+  TIMER_TYPE_RECORD_ONE,          // Record one showing
+  TIMER_TYPE_RECORD_WEEKLY,       // Record one showing every week
+  TIMER_TYPE_RECORD_DAILY,        // Record one showing every day
+  TIMER_TYPE_RECORD_ALL,          // Record all showings
+  TIMER_TYPE_TEXT_SEARCH,         // EPG Text Search All Showings
   // KEEP LAST
-  TIMER_TYPE_RECORD,                      // Record
-  TIMER_TYPE_OVERRIDE,                    // Override
-  TIMER_TYPE_DONT_RECORD,                 // Don't record
-  TIMER_TYPE_UNHANDLED_RULE               // Unhandled rule
+  TIMER_TYPE_UPCOMING,            // Upcoming
+  TIMER_TYPE_OVERRIDE,            // Override
+  TIMER_TYPE_DONT_RECORD,         // Don't record
+  TIMER_TYPE_UNHANDLED            // Unhandled rule
 } TimerTypeId;
 
 struct MythTimerEntry
@@ -77,7 +77,7 @@ struct MythTimerEntry
   uint32_t      parentIndex;
   Myth::RS_t    recordingStatus;
   MythTimerEntry()
-  : isInactive(true), timerType(TIMER_TYPE_UNHANDLED_RULE)
+  : isInactive(true), timerType(TIMER_TYPE_UNHANDLED)
   , chanid(0), isAnyChannel(false), startTime(0), endTime(0), isFullTextSearch(false)
   , season(0), episode(0), startOffset(0), endOffset(0), priority(0)
   , dupMethod(Myth::DM_CheckNone), autoExpire(false), firstShowing(false), recordingGroup(0)

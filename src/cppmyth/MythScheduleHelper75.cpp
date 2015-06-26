@@ -40,7 +40,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
   {
     _init = true;
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ONCE_MANUAL_SEARCH,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_MANUAL_SEARCH,
             PVR_TIMER_TYPE_IS_MANUAL |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
@@ -76,7 +76,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ONE_SHOWING,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_RECORD_ONE,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -94,7 +94,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ALL_SHOWINGS,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_RECORD_ALL,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
@@ -113,7 +113,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ONE_SHOWING_WEEKLY,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_RECORD_WEEKLY,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
@@ -133,7 +133,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_ONE_SHOWING_DAILY,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_RECORD_DAILY,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
@@ -177,7 +177,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
     ///////////////////////////////////////////////////////////////////////////
     //// KEEP LAST
     ///////////////////////////////////////////////////////////////////////////
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_UNHANDLED_RULE,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_UNHANDLED,
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
             PVR_TIMER_TYPE_IS_READONLY |
             PVR_TIMER_TYPE_IS_REPEATING |
@@ -200,7 +200,7 @@ const std::vector<MythScheduleManager::TimerType>& MythScheduleHelper75::GetTime
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefault()));
 
-    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_RECORD,
+    typeList.push_back(MythScheduleManager::TimerType(TIMER_TYPE_UPCOMING,
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -394,10 +394,10 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   switch (rule.Type())
   {
     case Myth::RT_DailyRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING_DAILY;
+      entry.timerType = TIMER_TYPE_RECORD_DAILY;
       break;
     case Myth::RT_WeeklyRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING_WEEKLY;
+      entry.timerType = TIMER_TYPE_RECORD_WEEKLY;
       break;
     case Myth::RT_AllRecord:
       //NB: I seem to remember reading on the mythv forum that the reason for deprectating the RT_ChannelRecord
@@ -405,7 +405,7 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       if (!(rule.Filter() & Myth::FM_ThisChannel))
         entry.isAnyChannel = true; // Identify as AnyChannel rule, then fall through to standard case
     case Myth::RT_ChannelRecord:
-      entry.timerType = TIMER_TYPE_ALL_SHOWINGS;
+      entry.timerType = TIMER_TYPE_RECORD_ALL;
       if (rule.SearchType() == Myth::ST_NoSearch)
         entry.epgSearch = rule.Title(); // EPG based
       break;
@@ -422,7 +422,7 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       }
       break;
     case Myth::RT_OneRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING;
+      entry.timerType = TIMER_TYPE_RECORD_ONE;
       if (!(rule.Filter() & Myth::FM_ThisChannel))
         entry.isAnyChannel = true; // Identify as AnyChannel rule, then fall through to standard case
       break;
@@ -433,7 +433,7 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       entry.timerType = TIMER_TYPE_OVERRIDE;
       break;
     default:
-      entry.timerType = TIMER_TYPE_UNHANDLED_RULE;
+      entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
   }
   switch (rule.SearchType())
@@ -445,7 +445,7 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
     case Myth::ST_PeopleSearch:
     case Myth::ST_PowerSearch:
       entry.epgSearch = rule.Description();
-      entry.timerType = TIMER_TYPE_UNHANDLED_RULE;
+      entry.timerType = TIMER_TYPE_UNHANDLED;
     default:
       break;
   }
@@ -456,11 +456,11 @@ bool MythScheduleHelper75::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   MythScheduleList recordings;
   switch (entry.timerType)
   {
-    case TIMER_TYPE_ALL_SHOWINGS:
-    case TIMER_TYPE_ONE_SHOWING:
-    case TIMER_TYPE_ONE_SHOWING_DAILY:
-    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
-    case TIMER_TYPE_UNHANDLED_RULE:
+    case TIMER_TYPE_RECORD_ALL:
+    case TIMER_TYPE_RECORD_ONE:
+    case TIMER_TYPE_RECORD_DAILY:
+    case TIMER_TYPE_RECORD_WEEKLY:
+    case TIMER_TYPE_UNHANDLED:
       if (difftime(rule.NextRecording(), 0) > 0)
       {
         // fill timeslot starting at next recording
@@ -633,7 +633,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
 
   switch (entry.timerType)
   {
-    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
+    case TIMER_TYPE_RECORD_WEEKLY:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -684,7 +684,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ONE_SHOWING_DAILY:
+    case TIMER_TYPE_RECORD_DAILY:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -735,9 +735,9 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ONCE_MANUAL_SEARCH:
+    case TIMER_TYPE_MANUAL_SEARCH:
     case TIMER_TYPE_THIS_SHOWING:
-    case TIMER_TYPE_ONE_SHOWING:
+    case TIMER_TYPE_RECORD_ONE:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -788,7 +788,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ALL_SHOWINGS:
+    case TIMER_TYPE_RECORD_ALL:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -834,7 +834,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
 
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
-    case TIMER_TYPE_RECORD:
+    case TIMER_TYPE_UPCOMING:
       // any type
       rule.SetType(Myth::RT_NotRecording);
       rule.SetChannelID(entry.chanid);

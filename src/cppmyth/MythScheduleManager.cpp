@@ -233,12 +233,12 @@ MythTimerEntryList MythScheduleManager::GetTimerEntries()
       {
         switch (entry->timerType)
         {
-          case TIMER_TYPE_UNHANDLED_RULE:
+          case TIMER_TYPE_UNHANDLED:
           case TIMER_TYPE_DONT_RECORD:
           case TIMER_TYPE_OVERRIDE:
             break;
           default:
-            entry->timerType = TIMER_TYPE_RECORD;
+            entry->timerType = TIMER_TYPE_UPCOMING;
         }
         entry->description = "";
         entry->chanid = it->second->ChannelID();
@@ -261,10 +261,10 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
 {
   switch (entry.timerType)
   {
-    case TIMER_TYPE_RECORD:
+    case TIMER_TYPE_UPCOMING:
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
-    case TIMER_TYPE_UNHANDLED_RULE:
+    case TIMER_TYPE_UNHANDLED:
       return MSM_ERROR_NOT_IMPLEMENTED;
     default:
       break;
@@ -278,9 +278,9 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
 {
   switch (entry.timerType)
   {
-    case TIMER_TYPE_UNHANDLED_RULE:
+    case TIMER_TYPE_UNHANDLED:
       break;
-    case TIMER_TYPE_RECORD:
+    case TIMER_TYPE_UPCOMING:
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     {
@@ -300,15 +300,15 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DeleteTimer(const MythTimerE
 {
   switch (entry.timerType)
   {
-    case TIMER_TYPE_UNHANDLED_RULE:
+    case TIMER_TYPE_UNHANDLED:
       break;
-    case TIMER_TYPE_RECORD:
+    case TIMER_TYPE_UPCOMING:
       return DisableRecording(entry.entryIndex);
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
       return DeleteModifier(entry.entryIndex);
     case TIMER_TYPE_THIS_SHOWING:
-    case TIMER_TYPE_ONCE_MANUAL_SEARCH:
+    case TIMER_TYPE_MANUAL_SEARCH:
       return DeleteRecordingRule(entry.entryIndex);
     default:
       if (force)

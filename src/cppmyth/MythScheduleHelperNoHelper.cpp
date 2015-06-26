@@ -157,7 +157,7 @@ MythScheduleManager::RuleSummaryInfo MythScheduleHelperNoHelper::GetSummaryInfo(
 bool MythScheduleHelperNoHelper::FillTimerEntry(MythTimerEntry& entry, const MythRecordingRuleNode& node) const
 {
   (void)node;
-  entry.timerType = TIMER_TYPE_UNHANDLED_RULE;
+  entry.timerType = TIMER_TYPE_UNHANDLED;
   return true;
 }
 

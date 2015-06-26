@@ -56,21 +56,21 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   switch (rule.Type())
   {
     case Myth::RT_DailyRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING_DAILY;
+      entry.timerType = TIMER_TYPE_RECORD_DAILY;
       break;
     case Myth::RT_WeeklyRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING_WEEKLY;
+      entry.timerType = TIMER_TYPE_RECORD_WEEKLY;
       break;
     case Myth::RT_AllRecord:
       if ((rule.Filter() & Myth::FM_ThisDayAndTime))
-        entry.timerType = TIMER_TYPE_ONE_SHOWING_WEEKLY;
+        entry.timerType = TIMER_TYPE_RECORD_WEEKLY;
       else if ((rule.Filter() & Myth::FM_ThisTime))
-        entry.timerType = TIMER_TYPE_ONE_SHOWING_DAILY;
+        entry.timerType = TIMER_TYPE_RECORD_DAILY;
       else
       {
         if (rule.SearchType() == Myth::ST_NoSearch) 
         {
-          entry.timerType = TIMER_TYPE_ALL_SHOWINGS;
+          entry.timerType = TIMER_TYPE_RECORD_ALL;
         }
         else if (rule.SearchType() == Myth::ST_TitleSearch)
         {
@@ -91,7 +91,7 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
     case Myth::RT_SingleRecord:
       {
         if (rule.SearchType()  == Myth::ST_ManualSearch)
-          entry.timerType = TIMER_TYPE_ONCE_MANUAL_SEARCH;
+          entry.timerType = TIMER_TYPE_MANUAL_SEARCH;
         else
           entry.timerType = TIMER_TYPE_THIS_SHOWING;
         // Fill recording status from its upcoming
@@ -104,7 +104,7 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       }
       break;
     case Myth::RT_OneRecord:
-      entry.timerType = TIMER_TYPE_ONE_SHOWING;
+      entry.timerType = TIMER_TYPE_RECORD_ONE;
       if (!(rule.Filter() & Myth::FM_ThisChannel))
         entry.isAnyChannel = true; // Identify this as an AnyChannel rule
       break;
@@ -115,7 +115,7 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
       entry.timerType = TIMER_TYPE_OVERRIDE;
       break;
     default:
-      entry.timerType = TIMER_TYPE_UNHANDLED_RULE;
+      entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
   }
   switch (rule.SearchType())
@@ -123,7 +123,7 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
     case Myth::ST_PeopleSearch:
     case Myth::ST_PowerSearch:
       entry.epgSearch = rule.Description();
-      entry.timerType = TIMER_TYPE_UNHANDLED_RULE;
+      entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
     case Myth::ST_TitleSearch:
     case Myth::ST_KeywordSearch:
@@ -137,12 +137,12 @@ bool MythScheduleHelper76::FillTimerEntry(MythTimerEntry& entry, const MythRecor
   MythScheduleList recordings;
   switch (entry.timerType)
   {
-    case TIMER_TYPE_ALL_SHOWINGS:
-    case TIMER_TYPE_ONE_SHOWING:
-    case TIMER_TYPE_ONE_SHOWING_DAILY:
-    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
+    case TIMER_TYPE_RECORD_ALL:
+    case TIMER_TYPE_RECORD_ONE:
+    case TIMER_TYPE_RECORD_DAILY:
+    case TIMER_TYPE_RECORD_WEEKLY:
     case TIMER_TYPE_TEXT_SEARCH:
-    case TIMER_TYPE_UNHANDLED_RULE:
+    case TIMER_TYPE_UNHANDLED:
       if (difftime(rule.NextRecording(), 0) > 0)
       {
         // fill timeslot starting at next recording
@@ -226,7 +226,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
 
   switch (entry.timerType)
   {
-    case TIMER_TYPE_ONCE_MANUAL_SEARCH:
+    case TIMER_TYPE_MANUAL_SEARCH:
     case TIMER_TYPE_THIS_SHOWING:
     {
       if (!entry.epgInfo.IsNull())
@@ -262,7 +262,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ONE_SHOWING_WEEKLY:
+    case TIMER_TYPE_RECORD_WEEKLY:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -298,7 +298,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ONE_SHOWING_DAILY:
+    case TIMER_TYPE_RECORD_DAILY:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -334,7 +334,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ONE_SHOWING:
+    case TIMER_TYPE_RECORD_ONE:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -357,7 +357,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_ALL_SHOWINGS:
+    case TIMER_TYPE_RECORD_ALL:
     {
       if (!entry.epgInfo.IsNull())
       {
@@ -424,7 +424,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
 
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
-    case TIMER_TYPE_RECORD:
+    case TIMER_TYPE_UPCOMING:
       // any type
       rule.SetType(Myth::RT_NotRecording);
       rule.SetChannelID(entry.chanid);
