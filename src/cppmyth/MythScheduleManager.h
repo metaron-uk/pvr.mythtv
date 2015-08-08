@@ -170,6 +170,7 @@ public:
   bool FillTimerEntryWithUpcoming(MythTimerEntry& entry, const MythProgramInfo& recording) const;
   MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
   bool FixRule(MythRecordingRule& rule) const;
+  MythRecordingRule UpdateFromTimer(const MythTimerEntry& entry);
 
   MythRecordingRuleList GetTemplateRules() const;
 
@@ -190,6 +191,7 @@ public:
     virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo) = 0;
     virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate) = 0;
     virtual bool FixRule(MythRecordingRule& rule) const = 0;
+    virtual MythRecordingRule UpdateFromTimer(const MythTimerEntry& entry) = 0;
     virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;
     virtual MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;
   };

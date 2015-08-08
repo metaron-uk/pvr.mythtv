@@ -33,4 +33,5 @@ public:
   //virtual bool FillTimerEntry(MythTimerEntry& entry, const MythProgramInfo& recording) const;
   virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
   virtual bool FixRule(MythRecordingRule& rule) const;
+  virtual MythRecordingRule UpdateFromTimer(const MythTimerEntry& entry);
 };

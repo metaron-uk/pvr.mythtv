@@ -42,6 +42,7 @@ public:
   virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
   virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
   virtual bool FixRule(MythRecordingRule& rule) const { return false; }
+  virtual MythRecordingRule UpdateFromTimer(const MythTimerEntry& entry);
   virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording);
   virtual MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythProgramInfo& recording);
 

@@ -263,7 +263,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     {
-      MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->UpdateFromTimer(entry);
       return UpdateRecording(entry.entryIndex, newrule);
     }
     case TIMER_TYPE_MANUAL_SEARCH:
@@ -276,12 +276,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_SEARCH_KEYWORD:
     case TIMER_TYPE_SEARCH_PEOPLE:
     {
-      if (entry.epgCheck && entry.epgInfo.IsNull())
-      {
-        XBMC->Log(LOG_ERROR, "%s: index %u requires valid EPG info", __FUNCTION__, entry.entryIndex);
-        return MSM_ERROR_NOT_IMPLEMENTED;
-      }
-      MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->UpdateFromTimer(entry);
       return UpdateRecordingRule(entry.entryIndex, newrule);
     }
     default:
@@ -966,6 +961,12 @@ bool MythScheduleManager::FixRule(MythRecordingRule& rule) const
 {
   CLockObject lock(m_lock);
   return m_versionHelper->FixRule(rule);
+}
+
+MythRecordingRule MythScheduleManager::UpdateFromTimer(const MythTimerEntry& entry)
+{
+  CLockObject lock(m_lock);
+  return m_versionHelper->UpdateFromTimer(entry);
 }
 
 MythRecordingRuleList MythScheduleManager::GetTemplateRules() const
