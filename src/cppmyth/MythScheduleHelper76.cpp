@@ -629,3 +629,49 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
           entry.timerType, entry.chanid, entry.callsign.c_str(), (unsigned)entry.startTime, (unsigned)entry.endTime);
   return rule;
 }
+
+bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
+{
+  bool ruleIsOK = true;
+  if (rule.StartTime() == rule.EndTime())
+  {
+    rule.SetEndTime(rule.EndTime() + 2);
+    XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has zero duration which the backend would reject. End time increased by 2 seconds.",
+              __FUNCTION__, rule.Title().c_str(), rule.RecordID());
+  }
+  switch (rule.SearchType())
+  {
+    case Myth::ST_PowerSearch:
+      if (rule.Subtitle().empty())
+      {
+        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type PowerSearch with no Subtitle. It will probably do nothing.",
+                  __FUNCTION__, rule.Title().c_str(), rule.RecordID());
+        ruleIsOK = false;
+      }
+    case Myth::ST_TitleSearch:
+    case Myth::ST_KeywordSearch:
+    case Myth::ST_PeopleSearch:
+      if (rule.Description().empty())
+      {
+        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type %u and no Description. It may severly degrade backend performance.",
+                  __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.SearchType());
+        ruleIsOK = false;
+      }
+      else if (rule.Description().length() <= 3)
+      {
+        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type %u and a very short Description. It may degrade backend performance.",
+                  __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.SearchType());
+        ruleIsOK = false;
+      }
+      break;
+    default:
+      break;
+  }
+  if (rule.ChannelID() == 0 || rule.Callsign() == "")
+  {
+     XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has no associated channel, which the backend will reject.",
+               __FUNCTION__, rule.Title().c_str(), rule.RecordID());
+     ruleIsOK = false;
+  }
+  return ruleIsOK;
+}
