@@ -960,6 +960,12 @@ MythRecordingRule MythScheduleManager::NewFromTimer(const MythTimerEntry& entry,
   return m_versionHelper->NewFromTimer(entry, withTemplate);
 }
 
+bool MythScheduleManager::FixRule(MythRecordingRule& rule) const
+{
+  CLockObject lock(m_lock);
+  return m_versionHelper->FixRule(rule);
+}
+
 MythRecordingRuleList MythScheduleManager::GetTemplateRules() const
 {
   CLockObject lock(m_lock);
