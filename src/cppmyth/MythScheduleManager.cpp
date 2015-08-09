@@ -250,6 +250,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
       return MSM_ERROR_NOT_IMPLEMENTED;
   }
   MythRecordingRule rule = m_versionHelper->NewFromTimer(entry, true);
+  FixRule(rule);
   MSM_ERROR ret = AddRecordingRule(rule);
   return ret;
 }
@@ -264,6 +265,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_OVERRIDE:
     {
       MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      FixRule(newrule);
       return UpdateRecording(entry.entryIndex, newrule);
     }
     case TIMER_TYPE_MANUAL_SEARCH:
@@ -282,6 +284,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
         return MSM_ERROR_NOT_IMPLEMENTED;
       }
       MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      FixRule(newrule);
       return UpdateRecordingRule(entry.entryIndex, newrule);
     }
     default:
@@ -960,6 +963,12 @@ MythRecordingRule MythScheduleManager::NewFromTimer(const MythTimerEntry& entry,
 {
   CLockObject lock(m_lock);
   return m_versionHelper->NewFromTimer(entry, withTemplate);
+}
+
+bool MythScheduleManager::FixRule(MythRecordingRule& rule) const
+{
+  CLockObject lock(m_lock);
+  return m_versionHelper->FixRule(rule);
 }
 
 MythRecordingRuleList MythScheduleManager::GetTemplateRules() const
