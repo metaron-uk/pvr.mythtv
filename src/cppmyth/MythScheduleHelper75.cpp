@@ -187,17 +187,18 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefaultId())));
 
-    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_SEARCH_KEYWORD,
+    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_SEARCH_TEXT,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
+            PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
             PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
-            XBMC->GetLocalizedString(30467), // Search keyword
+            XBMC->GetLocalizedString(30467), // Search text
             GetRulePriorityList(),
             GetRulePriorityDefaultId(),
             GetRuleDupMethodList(),
@@ -480,11 +481,13 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   {
     case Myth::ST_TitleSearch:
       entry.epgSearch = rule.Description();
-      entry.timerType = TIMER_TYPE_UNHANDLED;
+      entry.isFullTextSearch = false;
+      entry.timerType = TIMER_TYPE_SEARCH_TEXT;
       break;
     case Myth::ST_KeywordSearch:
       entry.epgSearch = rule.Description();
-      entry.timerType = TIMER_TYPE_SEARCH_KEYWORD;
+      entry.isFullTextSearch = true;
+      entry.timerType = TIMER_TYPE_SEARCH_TEXT;
       break;
     case Myth::ST_PeopleSearch:
       entry.epgSearch = rule.Description();
@@ -515,7 +518,7 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
     case TIMER_TYPE_RECORD_DAILY:
     case TIMER_TYPE_RECORD_ALL:
     case TIMER_TYPE_RECORD_SERIES:
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     case TIMER_TYPE_UNHANDLED:
       entry.startTime = rule.StartTime();
@@ -983,7 +986,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     {
       if (!entry.epgSearch.empty())
       {
@@ -995,7 +998,10 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
         }
         else
           rule.SetType(Myth::RT_AllRecord);
-        rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        if (entry.isFullTextSearch)
+          rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        else
+          rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         rule.SetTitle(entry.title);
         // Backend use the subtitle/description to find program by keywords or title
         rule.SetSubtitle("");
