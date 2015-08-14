@@ -143,6 +143,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   {
     case Myth::ST_TitleSearch:
       entry.epgSearch = rule.Description();
+      entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
     case Myth::ST_KeywordSearch:
       entry.epgSearch = rule.Description();
@@ -339,23 +340,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetInactive(entry.isInactive);
         return rule;
       }
-      if (!entry.epgSearch.empty())
-      {
-        rule.SetType(Myth::RT_OneRecord);
-        rule.SetSearchType(Myth::ST_TitleSearch); // Search title
-        if (entry.HasChannel())
-        {
-          rule.SetFilter(Myth::FM_ThisChannel);
-          rule.SetChannelID(entry.chanid);
-          rule.SetCallsign(entry.callsign);
-        }
-        rule.SetTitle(entry.title);
-        // Backend use the subtitle/description to find program by keywords or title
-        rule.SetSubtitle("");
-        rule.SetDescription(entry.epgSearch);
-        rule.SetInactive(entry.isInactive);
-        return rule;
-      }
       break;
     }
 
@@ -376,24 +360,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetCategory(entry.epgInfo.Category());
         rule.SetProgramID(entry.epgInfo.ProgramID());
         rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
-        return rule;
-      }
-      if (!entry.epgSearch.empty())
-      {
-        rule.SetType(Myth::RT_WeeklyRecord);
-        rule.SetSearchType(Myth::ST_TitleSearch); // Search title
-        if (entry.HasChannel())
-        {
-          rule.SetFilter(Myth::FM_ThisChannel);
-          rule.SetChannelID(entry.chanid);
-          rule.SetCallsign(entry.callsign);
-        }
-        rule.SetTitle(entry.title);
-        // Backend use the subtitle/description to find program by keywords or title
-        rule.SetSubtitle("");
-        rule.SetDescription(entry.epgSearch);
         rule.SetInactive(entry.isInactive);
         rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
         return rule;
@@ -436,23 +402,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
         return rule;
       }
-      if (!entry.epgSearch.empty())
-      {
-        rule.SetType(Myth::RT_DailyRecord);
-        rule.SetSearchType(Myth::ST_TitleSearch); // Search title
-        if (entry.HasChannel())
-        {
-          rule.SetFilter(Myth::FM_ThisChannel);
-          rule.SetChannelID(entry.chanid);
-          rule.SetCallsign(entry.callsign);
-        }
-        rule.SetTitle(entry.title);
-        // Backend use the subtitle/description to find program by keywords or title
-        rule.SetSubtitle("");
-        rule.SetDescription(entry.epgSearch);
-        rule.SetInactive(entry.isInactive);
-        return rule;
-      }
       if (entry.HasChannel() && entry.HasTimeSlot())
       {
         rule.SetType(Myth::RT_DailyRecord);
@@ -487,23 +436,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetCategory(entry.epgInfo.Category());
         rule.SetProgramID(entry.epgInfo.ProgramID());
         rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        return rule;
-      }
-      if (!entry.epgSearch.empty())
-      {
-        rule.SetType(Myth::RT_AllRecord);
-        rule.SetSearchType(Myth::ST_TitleSearch); // Search title
-        if (entry.HasChannel())
-        {
-          rule.SetFilter(Myth::FM_ThisChannel);
-          rule.SetChannelID(entry.chanid);
-          rule.SetCallsign(entry.callsign);
-        }
-        rule.SetTitle(entry.title);
-        // Backend use the subtitle/description to find program by keywords or title
-        rule.SetSubtitle("");
-        rule.SetDescription(entry.epgSearch);
         rule.SetInactive(entry.isInactive);
         return rule;
       }
