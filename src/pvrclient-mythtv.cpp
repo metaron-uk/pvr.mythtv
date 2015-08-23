@@ -1585,8 +1585,41 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iPriority = (*it)->priority;
     tag.iLifetime = (*it)->expiration;
     tag.iRecordingGroup = (*it)->recordingGroup;
-    tag.firstDay = (*it)->startTime; // using startTime
-    tag.iWeekdays = PVR_WEEKDAY_NONE; // not implemented
+    switch ((*it)->timerType)
+    {
+      case TIMER_TYPE_RECORD_WEEKLY:
+        tag.firstDay = (*it)->startTime;
+        if (weekday(&tag.firstDay) == 0)
+          tag.iWeekdays = PVR_WEEKDAY_SUNDAY;
+        else
+          tag.iWeekdays = 1 << (weekday(&tag.firstDay) - 1); // Monday = 1,  PVR_WEEKDAY_MONDAY= 0x01
+        break;
+      case TIMER_TYPE_RECORD_DAILY:
+        tag.firstDay = (*it)->startTime;
+        tag.iWeekdays = PVR_WEEKDAY_ALLDAYS;
+        break;
+      case TIMER_TYPE_RECORD_ALL:
+      case TIMER_TYPE_RECORD_SERIES:
+      case TIMER_TYPE_SEARCH_TEXT:
+      case TIMER_TYPE_SEARCH_PEOPLE:
+      case TIMER_TYPE_UNHANDLED:
+        tag.firstDay = 0;
+        tag.iWeekdays = PVR_WEEKDAY_NONE;
+        tag.bStartAnyTime = true;
+        tag.bEndAnyTime = true;
+        break;
+      case TIMER_TYPE_RECORD_ONE:
+        tag.firstDay = 0;
+        tag.iWeekdays = PVR_WEEKDAY_NONE;
+        tag.bEndAnyTime = true;
+        break;
+      case TIMER_TYPE_MANUAL_SEARCH:
+      case TIMER_TYPE_THIS_SHOWING:
+      default:
+        tag.firstDay = 0;
+        tag.iWeekdays = PVR_WEEKDAY_NONE;
+        break;
+    }
     tag.iPreventDuplicateEpisodes = static_cast<unsigned>((*it)->dupMethod);
     if ((*it)->epgCheck)
       tag.iEpgUid = MythEPGInfo::MakeBroadcastID(tag.iClientChannelUid, tag.startTime);
