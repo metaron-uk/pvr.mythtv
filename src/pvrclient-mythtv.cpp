@@ -1620,6 +1620,8 @@ PVR_ERROR PVRClientMythTV::AddTimer(const PVR_TIMER &timer)
     XBMC->Log(LOG_DEBUG, "%s: iClientChannelUid = %d", __FUNCTION__, timer.iClientChannelUid);
     XBMC->Log(LOG_DEBUG, "%s: startTime = %ld", __FUNCTION__, timer.startTime);
     XBMC->Log(LOG_DEBUG, "%s: endTime = %ld", __FUNCTION__, timer.endTime);
+    XBMC->Log(LOG_DEBUG, "%s: bStartAnyTime = %d",  __FUNCTION__, timer.bStartAnyTime);
+    XBMC->Log(LOG_DEBUG, "%s: bEndAnyTime = %d",  __FUNCTION__, timer.bEndAnyTime);
     XBMC->Log(LOG_DEBUG, "%s: state = %d", __FUNCTION__, timer.state);
     XBMC->Log(LOG_DEBUG, "%s: iTimerType = %d", __FUNCTION__, timer.iTimerType);
     XBMC->Log(LOG_DEBUG, "%s: strTitle = %s", __FUNCTION__, timer.strTitle);
@@ -1879,6 +1881,8 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
     XBMC->Log(LOG_DEBUG, "%s: iClientChannelUid = %d", __FUNCTION__, timer.iClientChannelUid);
     XBMC->Log(LOG_DEBUG, "%s: startTime = %ld", __FUNCTION__, timer.startTime);
     XBMC->Log(LOG_DEBUG, "%s: endTime = %ld", __FUNCTION__, timer.endTime);
+    XBMC->Log(LOG_DEBUG, "%s: bStartAnyTime = %d",  __FUNCTION__, timer.bStartAnyTime);
+    XBMC->Log(LOG_DEBUG, "%s: bEndAnyTime = %d",  __FUNCTION__, timer.bEndAnyTime);
     XBMC->Log(LOG_DEBUG, "%s: state = %d", __FUNCTION__, timer.state);
     XBMC->Log(LOG_DEBUG, "%s: iTimerType = %d", __FUNCTION__, timer.iTimerType);
     XBMC->Log(LOG_DEBUG, "%s: strTitle = %s", __FUNCTION__, timer.strTitle);
