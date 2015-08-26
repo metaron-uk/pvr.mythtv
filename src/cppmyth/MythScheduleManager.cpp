@@ -576,6 +576,10 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(uint32_t ind
             handle.SetStartOffset(newrule.StartOffset());
             handle.SetEndOffset(newrule.EndOffset());
             handle.SetRecordingGroup(newrule.RecordingGroup());
+            // Channel / Any Channel
+            handle.SetFilter(newrule.Filter());
+            handle.SetChannelID(newrule.ChannelID());
+            handle.SetCallsign(newrule.Callsign());
           break;
         }
         break;
@@ -745,6 +749,10 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecordingRule(uint32_t
         handle.SetRecordingGroup(newrule.RecordingGroup());
         handle.SetCheckDuplicatesInType(newrule.CheckDuplicatesInType());
         handle.SetDuplicateControlMethod(newrule.DuplicateControlMethod());
+        // Channel / Any Channel
+        handle.SetFilter(newrule.Filter());
+        handle.SetChannelID(newrule.ChannelID());
+        handle.SetCallsign(newrule.Callsign());
     }
 
     XBMC->Log(LOG_DEBUG, "%s: Dealing with the problem using method %d", __FUNCTION__, method);
