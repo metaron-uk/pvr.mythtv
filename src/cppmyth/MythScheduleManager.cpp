@@ -580,6 +580,9 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecording(uint32_t ind
             handle.SetFilter(newrule.Filter());
             handle.SetChannelID(newrule.ChannelID());
             handle.SetCallsign(newrule.Callsign());
+            // Start / End
+            handle.SetStartTime(newrule.StartTime());
+            handle.SetEndTime(newrule.EndTime());
           break;
         }
         break;
@@ -753,6 +756,9 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateRecordingRule(uint32_t
         handle.SetFilter(newrule.Filter());
         handle.SetChannelID(newrule.ChannelID());
         handle.SetCallsign(newrule.Callsign());
+        // Start / End
+        handle.SetStartTime(newrule.StartTime());
+        handle.SetEndTime(newrule.EndTime());
     }
 
     XBMC->Log(LOG_DEBUG, "%s: Dealing with the problem using method %d", __FUNCTION__, method);
