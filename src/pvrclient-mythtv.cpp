@@ -560,7 +560,15 @@ PVR_ERROR PVRClientMythTV::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANN
       tag.strCast = "";
       tag.strDirector = "";
       tag.strWriter = "";
-      tag.iYear = 0;
+      time_t airTime(it->second->airdate);
+      if (difftime(airTime, 0) > 0)
+      {
+        struct tm airTimeDate;
+        localtime_r(&airTime, &airTimeDate);
+        tag.iYear = airTimeDate.tm_year + 1900;
+      }
+      else
+        tag.iYear = 0;
       tag.strIMDBNumber = it->second->inetref.c_str();
 
       PVR->TransferEpgEntry(handle, &tag);
