@@ -202,7 +202,6 @@ private:
   bool IsMyLiveRecording(const MythProgramInfo& programInfo);
 
   // Timers
-  std::map<unsigned int, MYTH_SHARED_PTR<PVR_TIMER> > m_PVRtimerMemorandum;
   MythTimerEntry PVRtoTimerEntry(const PVR_TIMER &timer);
 
   /**

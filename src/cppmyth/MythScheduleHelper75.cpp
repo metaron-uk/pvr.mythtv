@@ -650,7 +650,6 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
       entry.epgCheck = false;
   }
 
-  entry.description = "";
   entry.chanid = recording.ChannelID();
   entry.callsign = recording.Callsign();
   entry.startTime = recording.StartTime();
@@ -830,7 +829,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
         rule.SetStartTime(entry.startTime);
         rule.SetEndTime(entry.endTime);
         rule.SetTitle(entry.title);
-        rule.SetDescription(entry.description);
         rule.SetInactive(entry.isInactive);
         return rule;
       }
@@ -1009,7 +1007,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
     case TIMER_TYPE_OVERRIDE:
@@ -1019,7 +1016,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
     case TIMER_TYPE_UPCOMING:
@@ -1031,7 +1027,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
 

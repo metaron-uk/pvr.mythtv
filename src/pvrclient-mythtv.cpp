@@ -1514,7 +1514,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
   MythTimerEntryList entries;
   {
     CLockObject lock(m_lock);
-    m_PVRtimerMemorandum.clear();
     if (m_scheduleManager)
       entries = m_scheduleManager->GetTimerEntries();
   }
@@ -1583,7 +1582,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     PVR_STRCPY(tag.strEpgSearchString, (*it)->epgSearch.c_str());
     tag.bFullTextEpgSearch = (*it)->isFullTextSearch;
     PVR_STRCPY(tag.strDirectory, ""); // not implemented
-    PVR_STRCPY(tag.strSummary, (*it)->description.c_str());
     tag.iPriority = (*it)->priority;
     tag.iLifetime = (*it)->expiration;
     tag.iRecordingGroup = (*it)->recordingGroup;
@@ -1598,9 +1596,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iGenreType = genre & 0xF0;
     tag.iGenreSubType = genre & 0x0F;
 
-    // Add it to memorandom: cf UpdateTimer()
-    MYTH_SHARED_PTR<PVR_TIMER> pTag = MYTH_SHARED_PTR<PVR_TIMER>(new PVR_TIMER(tag));
-    m_PVRtimerMemorandum.insert(std::make_pair((unsigned int&)tag.iClientIndex, pTag));
     PVR->TransferTimerEntry(handle, &tag);
     if (g_bExtraDebug)
       XBMC->Log(LOG_DEBUG, "%s: #%u: IN=%d RS=%d type %u state %d parent %u autoexpire %d", __FUNCTION__,
@@ -1856,7 +1851,6 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer)
   }
   entry.timerType = static_cast<TimerTypeId>(timer.iTimerType);
   entry.title.assign(timer.strTitle);
-  entry.description.assign(timer.strSummary);
   entry.category.assign(m_categories.Category(timer.iGenreType));
   entry.startOffset = timer.iMarginStart;
   entry.endOffset = timer.iMarginEnd;
@@ -1905,17 +1899,7 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
     XBMC->Log(LOG_DEBUG, "%s: iRecordingGroup = %d", __FUNCTION__, timer.iRecordingGroup);
   }
   XBMC->Log(LOG_DEBUG, "%s: title: %s, start: %ld, end: %ld, chanID: %u", __FUNCTION__, timer.strTitle, timer.startTime, timer.endTime, timer.iClientChannelUid);
-  MythTimerEntry entry;
-  // Restore discarded info by PVR manager from our saved timer
-  {
-    CLockObject lock(m_lock);
-    std::map<unsigned int, MYTH_SHARED_PTR<PVR_TIMER> >::const_iterator it = m_PVRtimerMemorandum.find(timer.iClientIndex);
-    if (it == m_PVRtimerMemorandum.end())
-      return PVR_ERROR_INVALID_PARAMETERS;
-    PVR_TIMER newTimer = timer;
-    newTimer.iEpgUid = it->second->iEpgUid;
-    entry = PVRtoTimerEntry(newTimer);
-  }
+  MythTimerEntry entry = PVRtoTimerEntry(timer);
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->UpdateTimer(entry);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
     return PVR_ERROR_FAILED;

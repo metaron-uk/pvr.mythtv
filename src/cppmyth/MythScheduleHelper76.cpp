@@ -308,7 +308,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
         rule.SetStartTime(entry.startTime);
         rule.SetEndTime(entry.endTime);
         rule.SetTitle(entry.title);
-        rule.SetDescription(entry.description);
         rule.SetInactive(entry.isInactive);
         return rule;
       }
@@ -488,7 +487,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
     case TIMER_TYPE_OVERRIDE:
@@ -498,7 +496,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
     case TIMER_TYPE_UPCOMING:
@@ -510,7 +507,6 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       rule.SetStartTime(entry.startTime);
       rule.SetEndTime(entry.endTime);
       rule.SetTitle(entry.title);
-      rule.SetDescription(entry.description);
       rule.SetInactive(entry.isInactive);
       return rule;
 

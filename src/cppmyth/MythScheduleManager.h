@@ -65,7 +65,6 @@ struct MythTimerEntry
   std::string   epgSearch;
   bool          isFullTextSearch;
   std::string   title;
-  std::string   description;
   std::string   category;
   int           startOffset;
   int           endOffset;
