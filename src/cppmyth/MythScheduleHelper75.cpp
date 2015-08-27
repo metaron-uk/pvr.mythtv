@@ -419,6 +419,7 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
         entry.timerType = TIMER_TYPE_THIS_SHOWING;
       entry.chanid = rule.ChannelID();
       entry.callsign = rule.Callsign();
+      entry.epgCheck = true;
       break;
 
     case Myth::RT_OneRecord:
@@ -498,7 +499,6 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
       entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
     case Myth::ST_NoSearch: // EPG based
-      entry.epgCheck = true;
       entry.epgSearch = rule.Title();
       break;
     case Myth::ST_ManualSearch: // Manual
@@ -506,6 +506,7 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
       entry.callsign = rule.Callsign();
       entry.startTime = rule.StartTime();
       entry.endTime = rule.EndTime();
+      entry.epgCheck = true;
       break;
     default:
       break;
@@ -644,6 +645,7 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
     case TIMER_TYPE_UPCOMING:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING_MANUAL:
+    case TIMER_TYPE_ZOMBIE:
       entry.epgCheck = true;
       break;
     default:

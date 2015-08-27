@@ -93,6 +93,7 @@ bool MythScheduleHelper85::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
     case TIMER_TYPE_UPCOMING:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING_MANUAL:
+    case TIMER_TYPE_ZOMBIE:
       entry.epgCheck = true;
       break;
     default:
