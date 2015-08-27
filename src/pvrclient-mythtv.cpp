@@ -1667,7 +1667,7 @@ PVR_ERROR PVRClientMythTV::AddTimer(const PVR_TIMER &timer)
 
   // Otherwise submit the new timer
   XBMC->Log(LOG_DEBUG, "%s: Submitting new timer", __FUNCTION__);
-  MythTimerEntry entry = PVRtoTimerEntry(timer, true);
+  MythTimerEntry entry = PVRtoTimerEntry(timer);
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->SubmitTimer(entry);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
     return PVR_ERROR_FAILED;
@@ -1715,7 +1715,7 @@ PVR_ERROR PVRClientMythTV::DeleteTimer(const PVR_TIMER &timer, bool bDeleteSched
 
   // Otherwise delete timer
   XBMC->Log(LOG_DEBUG, "%s: Deleting timer %u force %s", __FUNCTION__, timer.iClientIndex, (bDeleteScheduled ? "true" : "false"));
-  MythTimerEntry entry = PVRtoTimerEntry(timer, false);
+  MythTimerEntry entry = PVRtoTimerEntry(timer);
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->DeleteTimer(entry, bDeleteScheduled);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
     return PVR_ERROR_FAILED;
@@ -1725,7 +1725,7 @@ PVR_ERROR PVRClientMythTV::DeleteTimer(const PVR_TIMER &timer, bool bDeleteSched
   return PVR_ERROR_NO_ERROR;
 }
 
-MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool checkEPG)
+MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer)
 {
   MythTimerEntry entry;
 
@@ -1738,9 +1738,8 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
   time_t fd = timer.firstDay;
   time_t now = time(NULL);
 
-  if (checkEPG && (timer.iEpgUid > 0 || timer.iEpgUid < -1))
+  if ((timer.iEpgUid > 0 || timer.iEpgUid < -1))
   {
-    entry.epgCheck = true;
     hasEpg = true;
   }
   if (timer.iClientChannelUid > 0)
@@ -1811,19 +1810,14 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
     unsigned bid;
     time_t bst;
     MythEPGInfo::BreakBroadcastID(timer.iEpgUid, &bid, &bst);
-    // Retrieve broadcast using prior selected channel if valid else use original channel
-    if (hasChannel)
-      bid = static_cast<unsigned>(timer.iClientChannelUid);
+    entry.epgCheck = true;
     Myth::ProgramMapPtr epg = m_control->GetProgramGuide(bid, bst, bst);
     Myth::ProgramMap::reverse_iterator epgit = epg->rbegin(); // Get last found
     if (epgit != epg->rend())
     {
       entry.epgInfo = MythEPGInfo(epgit->second);
-      entry.chanid = epgit->second->channel.chanId;
-      entry.callsign = epgit->second->channel.callSign;
-      st = entry.epgInfo.StartTime();
-      et = entry.epgInfo.EndTime();
-      XBMC->Log(LOG_DEBUG,"%s: Found EPG program: %u %lu %s", __FUNCTION__, entry.chanid, entry.startTime, entry.epgInfo.Title().c_str());
+      XBMC->Log(LOG_DEBUG,"%s: Found EPG program: %s(%u) %lu %s", __FUNCTION__,
+                entry.epgInfo.Callsign().c_str(), entry.epgInfo.ChannelID(), entry.epgInfo.StartTime(), entry.epgInfo.Title().c_str());
     }
     else
     {
@@ -1832,7 +1826,7 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
     }
   }
   // Fill channel
-  if (!hasEpg && hasChannel)
+  if (hasChannel)
   {
     MythChannel channel = FindChannel(timer.iClientChannelUid);
     if (!channel.IsNull())
@@ -1920,7 +1914,7 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
       return PVR_ERROR_INVALID_PARAMETERS;
     PVR_TIMER newTimer = timer;
     newTimer.iEpgUid = it->second->iEpgUid;
-    entry = PVRtoTimerEntry(newTimer, true);
+    entry = PVRtoTimerEntry(newTimer);
   }
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->UpdateTimer(entry);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)

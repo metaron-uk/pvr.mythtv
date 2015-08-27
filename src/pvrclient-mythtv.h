@@ -203,7 +203,7 @@ private:
 
   // Timers
   std::map<unsigned int, MYTH_SHARED_PTR<PVR_TIMER> > m_PVRtimerMemorandum;
-  MythTimerEntry PVRtoTimerEntry(const PVR_TIMER &timer, bool checkEPG);
+  MythTimerEntry PVRtoTimerEntry(const PVR_TIMER &timer);
 
   /**
    * \brief Returns full title of MythTV program

@@ -251,6 +251,8 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
   }
   MythRecordingRule rule = m_versionHelper->NewFromTimer(entry, true);
   FixRule(rule);
+  XBMC->Log(LOG_DEBUG, "%s: Adding %s (%u), ChanID %u, Filter %u, Type %u, Search %u",
+            __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.ChannelID(), rule.Filter(), rule.Type(), rule.SearchType());
   MSM_ERROR ret = AddRecordingRule(rule);
   return ret;
 }
@@ -278,14 +280,11 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     {
-      if (entry.epgCheck && entry.epgInfo.IsNull())
-      {
-        XBMC->Log(LOG_ERROR, "%s: index %u requires valid EPG info", __FUNCTION__, entry.entryIndex);
-        return MSM_ERROR_NOT_IMPLEMENTED;
-      }
-      MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
-      FixRule(newrule);
-      return UpdateRecordingRule(entry.entryIndex, newrule);
+      MythRecordingRule rule = m_versionHelper->UpdateFromTimer(entry);
+      XBMC->Log(LOG_DEBUG, "%s: Updating %s (%u), ChanID %u, Filter %u, Type %u, Search %u",
+            __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.ChannelID(), rule.Filter(), rule.Type(), rule.SearchType());
+      FixRule(rule);
+      return UpdateRecordingRule(entry.entryIndex, rule);
     }
     default:
       break;

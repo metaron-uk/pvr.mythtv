@@ -803,6 +803,20 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
     rule.SetRecordingGroup(GetRuleRecordingGroupName(entry.recordingGroup));
   }
 
+  if (!entry.epgInfo.IsNull()) // Defaults using EPG info, over-ride below as required
+  {
+    rule.SetTitle(entry.epgInfo.Title());
+    rule.SetSubtitle(entry.epgInfo.Subtitle());
+    rule.SetDescription(entry.epgInfo.Description());
+    rule.SetChannelID(entry.epgInfo.ChannelID());
+    rule.SetCallsign(entry.epgInfo.Callsign());
+    rule.SetStartTime(entry.epgInfo.StartTime());
+    rule.SetEndTime(entry.epgInfo.EndTime());
+    rule.SetCategory(entry.epgInfo.Category());
+    rule.SetProgramID(entry.epgInfo.ProgramID());
+    rule.SetSeriesID(entry.epgInfo.SeriesID());
+  }
+
   switch (entry.timerType)
   {
     case TIMER_TYPE_MANUAL_SEARCH:
@@ -829,16 +843,6 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
       {
         rule.SetType(Myth::RT_SingleRecord);
         rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
         rule.SetInactive(entry.isInactive);
         return rule;
       }
@@ -847,142 +851,105 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
 
     case TIMER_TYPE_RECORD_ONE:
     {
-      if (!entry.epgInfo.IsNull())
+      rule.SetInactive(entry.isInactive);
+      rule.SetTitle(entry.title);
+      if (entry.HasChannel())
       {
-        rule.SetType(Myth::RT_OneRecord);
-        rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        return rule;
+        rule.SetChannelID(entry.chanid);
+        rule.SetCallsign(entry.callsign);
+        // TODO: Is there no way to force a channel record 'one' on 0.26
       }
+      rule.SetType(Myth::RT_OneRecord);
+      rule.SetSearchType(Myth::ST_NoSearch);
+      return rule;
       break;
     }
 
     case TIMER_TYPE_RECORD_WEEKLY:
     {
-      if (!entry.epgInfo.IsNull())
+      rule.SetInactive(entry.isInactive);
+      rule.SetTitle(entry.title);
+      if (entry.HasChannel())
       {
-        rule.SetType(Myth::RT_WeeklyRecord);
-        rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
-        return rule;
-      }
-      if (entry.HasChannel() && entry.HasTimeSlot())
-      {
-        rule.SetType(Myth::RT_WeeklyRecord);
-        rule.SetSearchType(Myth::ST_ManualSearch); // Using timeslot
         rule.SetChannelID(entry.chanid);
         rule.SetCallsign(entry.callsign);
+        // TODO: Is there no way to force a channel record weekly on 0.26
+      }
+      if (entry.HasTimeSlot())
+      {
         rule.SetStartTime(entry.startTime);
         rule.SetEndTime(entry.endTime);
-        rule.SetTitle(entry.title);
-        rule.SetDescription(entry.description);
-        rule.SetInactive(entry.isInactive);
-        rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
+        rule.SetType(Myth::RT_WeeklyRecord);
+        rule.SetSearchType(Myth::ST_ManualSearch); // Using timeslot
         return rule;
       }
+      // "Any Time" is currently not supported, so use EPG tag timeslot populated above if available
+      else if (!entry.epgInfo.IsNull())
+        rule.SetType(Myth::RT_WeeklyRecord);
+        rule.SetSearchType(Myth::ST_NoSearch);
+        return rule;
       break;
     }
 
     case TIMER_TYPE_RECORD_DAILY:
     {
-      if (!entry.epgInfo.IsNull())
+      rule.SetInactive(entry.isInactive);
+      rule.SetTitle(entry.title);
+      if (entry.HasChannel())
       {
-        rule.SetType(Myth::RT_DailyRecord);
-        rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
-        return rule;
-      }
-      if (entry.HasChannel() && entry.HasTimeSlot())
-      {
-        rule.SetType(Myth::RT_DailyRecord);
-        rule.SetSearchType(Myth::ST_ManualSearch); // Using timeslot
         rule.SetChannelID(entry.chanid);
         rule.SetCallsign(entry.callsign);
+        // TODO: Is there no way to force a channel record daily on 0.26
+      }
+      if (entry.HasTimeSlot())
+      {
         rule.SetStartTime(entry.startTime);
         rule.SetEndTime(entry.endTime);
-        rule.SetTitle(entry.title);
-        rule.SetDescription(entry.description);
-        rule.SetInactive(entry.isInactive);
-        rule.SetDuplicateControlMethod(Myth::DM_CheckNone);
+        rule.SetType(Myth::RT_DailyRecord);
+        rule.SetSearchType(Myth::ST_ManualSearch); // Using timeslot
         return rule;
       }
+      // "Any Time" is currently not supported, so use EPG tag timeslot populated above if available
+      else if (!entry.epgInfo.IsNull())
+        rule.SetType(Myth::RT_DailyRecord);
+        rule.SetSearchType(Myth::ST_NoSearch);
+        return rule;
       break;
     }
 
     case TIMER_TYPE_RECORD_ALL:
     {
-      if (!entry.epgInfo.IsNull())
+      rule.SetInactive(entry.isInactive);
+      rule.SetTitle(entry.title);
+      if (entry.HasChannel())
       {
+        rule.SetChannelID(entry.chanid);
+        rule.SetCallsign(entry.callsign);
         rule.SetType(Myth::RT_ChannelRecord);
-        rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        return rule;
       }
+      else
+        rule.SetType(Myth::RT_AllRecord);
+      rule.SetSearchType(Myth::ST_NoSearch);
+      return rule;
       break;
     }
 
     case TIMER_TYPE_RECORD_SERIES:
     {
-      if (!entry.epgInfo.IsNull())
+      rule.SetInactive(entry.isInactive);
+      rule.SetTitle(entry.title);
+      if (entry.HasChannel())
       {
+        rule.SetChannelID(entry.chanid);
+        rule.SetCallsign(entry.callsign);
         rule.SetType(Myth::RT_ChannelRecord);
-        rule.SetFilter(Myth::FM_ThisSeries);
-        rule.SetSearchType(Myth::ST_NoSearch);
-        rule.SetChannelID(entry.epgInfo.ChannelID());
-        rule.SetStartTime(entry.epgInfo.StartTime());
-        rule.SetEndTime(entry.epgInfo.EndTime());
-        rule.SetTitle(entry.epgInfo.Title());
-        rule.SetSubtitle(entry.epgInfo.Subtitle());
-        rule.SetDescription(entry.description);
-        rule.SetCallsign(entry.epgInfo.Callsign());
-        rule.SetCategory(entry.epgInfo.Category());
-        rule.SetProgramID(entry.epgInfo.ProgramID());
-        rule.SetSeriesID(entry.epgInfo.SeriesID());
-        rule.SetInactive(entry.isInactive);
-        return rule;
       }
+      else
+        rule.SetType(Myth::RT_AllRecord);
+      rule.SetFilter(rule.Filter() | Myth::FM_ThisSeries);
+      rule.SetSearchType(Myth::ST_NoSearch);
+      if (rule.SeriesID() != "")
+        return rule;
       break;
     }
 
