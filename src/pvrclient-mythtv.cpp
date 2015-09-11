@@ -916,6 +916,15 @@ PVR_ERROR PVRClientMythTV::GetRecordings(ADDON_HANDLE handle)
       PVR_STRCPY(tag.strThumbnailPath, strIconPath.c_str());
       PVR_STRCPY(tag.strFanartPath, strFanartPath.c_str());
 
+      // EPG Entry (Enables "Play recording" option and icon)
+      time_t now(time(0));
+      if (difftime(now, it->second.EndTime()) < 60 * 60 * 24 ) // Up to 1 day in the past
+      {
+        tag.iEpgEventId = MythEPGInfo::MakeBroadcastID(FindPVRChannelUid(it->second.ChannelID()), it->second.StartTime());
+        XBMC->Log(LOG_DEBUG, "%s: Added EPG Association with %u for %s(%s) ", __FUNCTION__, tag.iEpgEventId,
+          it->second.Title().c_str(), it->second.Subtitle().c_str());
+      }
+
       // Unimplemented
       tag.iLifetime = 0;
       tag.iPriority = 0;
