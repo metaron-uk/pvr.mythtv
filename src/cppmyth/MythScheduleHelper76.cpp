@@ -220,6 +220,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
 
   // fill others
   entry.title = rule.Title();
+  entry.subtitle = rule.Subtitle();
   entry.category = rule.Category();
   entry.startOffset = rule.StartOffset();
   entry.endOffset = rule.EndOffset();

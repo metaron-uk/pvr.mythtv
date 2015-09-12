@@ -559,6 +559,7 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
 
   // fill others
   entry.title = rule.Title();
+  entry.subtitle = rule.Subtitle();
   entry.category = rule.Category();
   entry.startOffset = rule.StartOffset();
   entry.endOffset = rule.EndOffset();
@@ -658,12 +659,11 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   entry.startTime = recording.StartTime();
   entry.endTime = recording.EndTime();
   entry.title.assign(recording.Title());
-  if (!recording.Subtitle().empty())
-    entry.title.append(" (").append(recording.Subtitle()).append(")");
+  entry.subtitle.assign(recording.Subtitle());
   if (recording.Season() && recording.Episode())
-    entry.title.append(" - ").append(Myth::IntToString(recording.Season())).append(".").append(Myth::IntToString(recording.Episode()));
+    entry.subtitle.append(" - ").append(Myth::IntToString(recording.Season())).append(".").append(Myth::IntToString(recording.Episode()));
   else if (recording.Episode())
-    entry.title.append(" - S").append(Myth::IntToString(recording.Episode()));
+    entry.subtitle.append(" - S").append(Myth::IntToString(recording.Episode()));
   entry.recordingGroup = GetRuleRecordingGroupId(recording.RecordingGroup());
   entry.entryIndex = MythScheduleManager::MakeIndex(recording); // upcoming index
   return true;

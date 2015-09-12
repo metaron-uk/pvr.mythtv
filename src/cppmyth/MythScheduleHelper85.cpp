@@ -105,10 +105,9 @@ bool MythScheduleHelper85::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   entry.startTime = recording.StartTime();
   entry.endTime = recording.EndTime();
   entry.title.assign(recording.Title());
-  if (!recording.Subtitle().empty())
-    entry.title.append(" (").append(recording.Subtitle()).append(")");
+  entry.subtitle.assign(recording.Subtitle());
   if (recording.Season() || recording.Episode())
-    entry.title.append(" - ").append(Myth::IntToString(recording.Season())).append(".").append(Myth::IntToString(recording.Episode()));
+    entry.subtitle.append(" - ").append(Myth::IntToString(recording.Season())).append(".").append(Myth::IntToString(recording.Episode()));
   entry.recordingGroup = GetRuleRecordingGroupId(recording.RecordingGroup());
   entry.entryIndex = MythScheduleManager::MakeIndex(recording); // upcoming index
   return true;

@@ -1600,6 +1600,7 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
 
     tag.iTimerType = static_cast<unsigned>((*it)->timerType);
     PVR_STRCPY(tag.strTitle, (*it)->title.c_str());
+    PVR_STRCPY(tag.strEpisodeName, (*it)->subtitle.c_str());
     PVR_STRCPY(tag.strEpgSearchString, (*it)->epgSearch.c_str());
     tag.bFullTextEpgSearch = (*it)->isFullTextSearch;
     PVR_STRCPY(tag.strDirectory, ""); // not implemented
@@ -1679,6 +1680,7 @@ PVR_ERROR PVRClientMythTV::AddTimer(const PVR_TIMER &timer)
     XBMC->Log(LOG_DEBUG, "%s: state = %d", __FUNCTION__, timer.state);
     XBMC->Log(LOG_DEBUG, "%s: iTimerType = %d", __FUNCTION__, timer.iTimerType);
     XBMC->Log(LOG_DEBUG, "%s: strTitle = %s", __FUNCTION__, timer.strTitle);
+    XBMC->Log(LOG_DEBUG, "%s: strEpisodeName = %s", __FUNCTION__, timer.strEpisodeName);
     XBMC->Log(LOG_DEBUG, "%s: strEpgSearchString = %s", __FUNCTION__, timer.strEpgSearchString);
     XBMC->Log(LOG_DEBUG, "%s: bFullTextEpgSearch = %d", __FUNCTION__, timer.bFullTextEpgSearch);
     XBMC->Log(LOG_DEBUG, "%s: strDirectory = %s", __FUNCTION__, timer.strDirectory);
@@ -1940,6 +1942,7 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
     XBMC->Log(LOG_DEBUG, "%s: state = %d", __FUNCTION__, timer.state);
     XBMC->Log(LOG_DEBUG, "%s: iTimerType = %d", __FUNCTION__, timer.iTimerType);
     XBMC->Log(LOG_DEBUG, "%s: strTitle = %s", __FUNCTION__, timer.strTitle);
+    XBMC->Log(LOG_DEBUG, "%s: strEpisodeName = %s", __FUNCTION__, timer.strEpisodeName);
     XBMC->Log(LOG_DEBUG, "%s: strEpgSearchString = %s", __FUNCTION__, timer.strEpgSearchString);
     XBMC->Log(LOG_DEBUG, "%s: bFullTextEpgSearch = %d", __FUNCTION__, timer.bFullTextEpgSearch);
     XBMC->Log(LOG_DEBUG, "%s: strDirectory = %s", __FUNCTION__, timer.strDirectory);
