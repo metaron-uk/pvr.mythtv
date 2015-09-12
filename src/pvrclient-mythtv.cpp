@@ -555,6 +555,12 @@ PVR_ERROR PVRClientMythTV::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANN
       tag.iEpisodePartNumber = 0;
       tag.iParentalRating = 0;
       tag.iSeriesNumber = (int)it->second->season;
+      if (it->second->title == "ITV News West Country")
+      {
+        tag.iEpisodeNumber = 1;
+        tag.iEpisodePartNumber = 1;
+        tag.iSeriesNumber = 1;
+      }
       tag.iStarRating = atoi(it->second->stars.c_str());
       tag.strOriginalTitle = "";
       tag.strCast = "";
