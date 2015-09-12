@@ -422,6 +422,14 @@ extern "C" {
   } ATTRIBUTE_PACKED PVR_TIMER;
 
   /*!
+   * @brief numeric PVR recording status definitions (PVR_RECORDING.iStatus values)
+   */
+  const unsigned int PVR_RECORDING_STATUS_NONE                    = 0x000000;
+  const unsigned int PVR_RECORDING_STATUS_RECORD_IN_PROGRESS      = 0x000001; /*!< @brief this recording is currently in progress */
+  const unsigned int PVR_RECORDING_STATUS_KEEP_FOREVER            = 0x000002; /*!< @brief this recording will be kept forever. If not set the assumption is that the recording will eventually be deleted to make disk space according to backend storage policy */
+  const unsigned int PVR_RECORDING_STATUS_EXPIRES_SOON            = 0x000004; /*!< @brief this recording will shortly be deleted by the backend. Last chance to watch */
+
+  /*!
    * @brief Representation of a recording.
    */
   typedef struct PVR_RECORDING {
@@ -450,6 +458,7 @@ extern "C" {
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording */
+    unsigned int iStatus;                                 /*!< @brief (optional) status of this recording (see definitions above) */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

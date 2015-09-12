@@ -933,6 +933,9 @@ PVR_ERROR PVRClientMythTV::GetRecordings(ADDON_HANDLE handle)
         tag.iEpgEventId = MythEPGInfo::MakeBroadcastID(FindPVRChannelUid(it->second.ChannelID()), it->second.StartTime());
       }
 
+      if (it->second.Status() & Myth::RS_RECORDING)
+        tag.iStatus |= PVR_RECORDING_STATUS_RECORD_IN_PROGRESS;
+
       // Unimplemented
       tag.iLifetime = 0;
       tag.iPriority = 0;
