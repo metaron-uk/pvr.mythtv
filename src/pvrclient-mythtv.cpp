@@ -560,7 +560,11 @@ PVR_ERROR PVRClientMythTV::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANN
         tag.iEpisodeNumber = 1;
         tag.iEpisodePartNumber = 1;
         tag.iSeriesNumber = 1;
+        tag.iFlags = EPG_TAG_FLAG_IS_SERIES;
       }
+      else if (it->second->title == "BBC News")
+        tag.iFlags = EPG_TAG_FLAG_IS_SERIES;
+        
       tag.iStarRating = atoi(it->second->stars.c_str());
       tag.strOriginalTitle = "";
       tag.strCast = "";
@@ -1772,7 +1776,7 @@ PVR_ERROR PVRClientMythTV::DeleteTimer(const PVR_TIMER &timer, bool force)
 
   // Otherwise delete timer
   XBMC->Log(LOG_DEBUG, "%s: Deleting timer %u force %s", __FUNCTION__, timer.iClientIndex, (force ? "true" : "false"));
-  MythTimerEntry entry = PVRtoTimerEntry(timer, false);
+  MythTimerEntry entry = PVRtoTimerEntry(timer);
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->DeleteTimer(entry, force);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
     return PVR_ERROR_FAILED;
@@ -1795,7 +1799,7 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer)
   time_t fd = timer.firstDay;
   time_t now = time(NULL);
 
-  if (checkEPG && (timer.iEpgUid > PVR_TIMER_NO_EPG_UID))
+  if (timer.iEpgUid > PVR_TIMER_NO_EPG_UID)
   {
     hasEpg = true;
   }
