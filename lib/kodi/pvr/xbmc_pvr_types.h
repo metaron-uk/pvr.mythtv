@@ -79,10 +79,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "3.0.0"
+#define XBMC_PVR_API_VERSION "5.0.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "3.0.0"
+#define XBMC_PVR_MIN_API_VERSION "5.0.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -94,9 +94,19 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_NONE = 0; /*!< @brief "Null" value for a numeric timer type. */
 
   /*!
+   * @brief special PVR_TIMER.iClientIndex value to indicate that a timer has not (yet) a valid client index.
+   */
+  const unsigned int PVR_TIMER_NO_CLIENT_INDEX = 0; /*!< @brief timer has not (yet) a valid client index. */
+
+  /*!
    * @brief special PVR_TIMER.iParentClientIndex value to indicate that a timer has no parent.
    */
-  const unsigned int PVR_TIMER_NO_PARENT = 0; /*!< @brief timer has no parent; it was not scheduled by a repeating timer. */
+  const unsigned int PVR_TIMER_NO_PARENT = PVR_TIMER_NO_CLIENT_INDEX; /*!< @brief timer has no parent; it was not scheduled by a repeating timer. */
+
+  /*!
+   * @brief special PVR_TIMER.iEpgUid value to indicate that a timer has no EPG event uid.
+   */
+  const unsigned int PVR_TIMER_NO_EPG_UID = 0; /*!< @brief timer has no EPG event uid. */
 
   /*!
    * @brief special PVR_TIMER.iClientChannelUid value to indicate "any channel". Useful for some repeating timer types.
@@ -132,7 +142,7 @@ extern "C" {
   const unsigned int PVR_TIMER_TYPE_SUPPORTS_MAX_RECORDINGS           = 0x00100000; /*!< @brief this type supports specifying a maximum recordings setting' (PVR_TIMER.iMaxRecordings) */
   const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE        = 0x00200000; /*!< @brief this type shold not appear on any create menus which don't provide an associated EPG tag */
   const unsigned int PVR_TIMER_TYPE_FORBIDS_EPG_TAG_ON_CREATE         = 0x00400000; /*!< @brief this type should not appear on any create menus which provide an associated EPG tag */
-  const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE     = 0x00800000; /*!< @brief this type should not appear on any create menus unless associated with an EPG tag with 'series' attributes (EPG_TAG.iSeriesNumber > 0 || EPG_TAG.iEpisodeNumber > 0 || EPG_TAG.iEpisodePartNumber > 0) */
+  const unsigned int PVR_TIMER_TYPE_REQUIRES_EPG_SERIES_ON_CREATE     = 0x00800000; /*!< @brief this type should not appear on any create menus unless associated with an EPG tag with 'series' attributes (EPG_TAG.iSeriesNumber > 0 || EPG_TAG.iEpisodeNumber > 0 || EPG_TAG.iEpisodePartNumber > 0). Implies PVR_TIMER_TYPE_REQUIRES_EPG_TAG_ON_CREATE */
 
   /*!
    * @brief PVR timer weekdays (PVR_TIMER.iWeekdays values)
@@ -387,7 +397,8 @@ extern "C" {
    * @brief Representation of a timer event.
    */
   typedef struct PVR_TIMER {
-    unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client */
+    unsigned int    iClientIndex;                              /*!< @brief (required) the index of this timer given by the client. PVR_TIMER_NO_CLIENT_INDEX indicates that the index was not yet set by the client, for example for new timers created by
+                                                                    Kodi and passed the first time to the client. A valid index must be greater than PVR_TIMER_NO_CLIENT_INDEX. */
     unsigned int    iParentClientIndex;                        /*!< @brief (optional) for timers scheduled by a repeating timer, the index of the repeating timer that scheduled this timer (it's PVR_TIMER.iClientIndex value). Use PVR_TIMER_NO_PARENT
                                                                     to indicate that this timer was no scheduled by a repeating timer. */
     int             iClientChannelUid;                         /*!< @brief (optional) unique identifier of the channel to record on. PVR_TIMER_ANY_CHANNEL will denote "any channel", not a specifoc one. */
@@ -400,8 +411,8 @@ extern "C" {
                                                                     Kodi does not interpret this value (except for checking for PVR_TIMER_TYPE_NONE), but will pass the right id to the addon with every PVR_TIMER instance, thus the addon easily can determine
                                                                     the timer type. */
     char            strTitle[PVR_ADDON_NAME_STRING_LENGTH];    /*!< @brief (required) a title for this timer */
-    char            strEpisodeName[PVR_ADDON_NAME_STRING_LENGTH];
-                                                               /*!< @brief (optional) episode name (also known as subtitle) for this timer */
+    char            strSubtitle[PVR_ADDON_NAME_STRING_LENGTH];
+                                                               /*!< @brief (optional) a subtitle for this timer */
     char            strEpgSearchString[PVR_ADDON_NAME_STRING_LENGTH]; /*!< @brief (optional) a string used to search epg data for repeating epg-based timers. Format is backend-dependent, for example regexp */
     bool            bFullTextEpgSearch;                        /*!< @brief (optional) indicates, whether strEpgSearchString is to match against the epg episode title only or also against "other" epg data (backend-dependent) */
     char            strDirectory[PVR_ADDON_URL_STRING_LENGTH]; /*!< @brief (optional) the (relative) directory where the recording will be stored in */
@@ -414,20 +425,12 @@ extern "C" {
     unsigned int    iWeekdays;                                 /*!< @brief (optional) week days, for repeating timers */
     unsigned int    iPreventDuplicateEpisodes;                 /*!< @brief (optional) 1 if backend should only record new episodes in case of a repeating epg-based timer, 0 if all episodes shall be recorded (no duplicate detection). Actual algorithm for
                                                                     duplicate detection is defined by the backend. Addons may define own values for different duplicate detection algorithms, thus this is not just a bool.*/
-    int             iEpgUid;                                   /*!< @brief (optional) epg event id. If set iClientChannelUid, strTitle, strSummary, startTime, endTime, iGenreType, iGenreSubType will be ignored */
+    unsigned int    iEpgUid;                                   /*!< @brief (optional) epg event id. Use PVR_TIMER_NO_EPG_UID to state that there is no EPG event id available for this timer. Values greater than PVR_TIMER_NO_EPG_UID represent a valid epg event id. */
     unsigned int    iMarginStart;                              /*!< @brief (optional) if set, the backend starts the recording iMarginStart minutes before startTime. */
     unsigned int    iMarginEnd;                                /*!< @brief (optional) if set, the backend ends the recording iMarginEnd minutes after endTime. */
     int             iGenreType;                                /*!< @brief (optional) genre type */
     int             iGenreSubType;                             /*!< @brief (optional) genre sub type */
   } ATTRIBUTE_PACKED PVR_TIMER;
-
-  /*!
-   * @brief numeric PVR recording status definitions (PVR_RECORDING.iStatus values)
-   */
-  const unsigned int PVR_RECORDING_STATUS_NONE                    = 0x000000;
-  const unsigned int PVR_RECORDING_STATUS_RECORD_IN_PROGRESS      = 0x000001; /*!< @brief this recording is currently in progress */
-  const unsigned int PVR_RECORDING_STATUS_KEEP_FOREVER            = 0x000002; /*!< @brief this recording will be kept forever. If not set the assumption is that the recording will eventually be deleted to make disk space according to backend storage policy */
-  const unsigned int PVR_RECORDING_STATUS_EXPIRES_SOON            = 0x000004; /*!< @brief this recording will shortly be deleted by the backend. Last chance to watch */
 
   /*!
    * @brief Representation of a recording.
@@ -458,7 +461,9 @@ extern "C" {
     int    iLastPlayedPosition;                           /*!< @brief (optional) last played position of this recording on the client */
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording */
-    unsigned int iStatus;                                 /*!< @brief (optional) status of this recording (see definitions above) */
+    bool   bRecordingInProgress;                          /*!< @brief (optional) this recording is currently in progress */
+    bool   bExpiresNever;                                 /*!< @brief (optional) the backend will never expire (and auto-delete) this recording */
+    bool   bExpiresSoon;                                  /*!< @brief (optional) the backend will expire (and auto-delete) this recording 'soon'. Precise defintition is backend/pvr client specific */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!
@@ -535,7 +540,7 @@ extern "C" {
     int          (__cdecl* GetTimersAmount)(void);
     PVR_ERROR    (__cdecl* GetTimers)(ADDON_HANDLE);
     PVR_ERROR    (__cdecl* AddTimer)(const PVR_TIMER&);
-    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool, bool);
+    PVR_ERROR    (__cdecl* DeleteTimer)(const PVR_TIMER&, bool);
     PVR_ERROR    (__cdecl* UpdateTimer)(const PVR_TIMER&);
     bool         (__cdecl* OpenLiveStream)(const PVR_CHANNEL&);
     void         (__cdecl* CloseLiveStream)(void);
