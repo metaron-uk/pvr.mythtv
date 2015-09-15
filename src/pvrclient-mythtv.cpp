@@ -926,6 +926,7 @@ PVR_ERROR PVRClientMythTV::GetRecordings(ADDON_HANDLE handle)
       PVR_STRCPY(tag.strThumbnailPath, strIconPath.c_str());
       PVR_STRCPY(tag.strFanartPath, strFanartPath.c_str());
 
+      time_t now = time(0);
       // EPG Entry (Enables "Play recording" option and icon)
       if (difftime(now, it->second.EndTime()) < 60 * 60 * 24 ) // Up to 1 day in the past
       {
