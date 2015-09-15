@@ -560,9 +560,8 @@ PVR_ERROR PVRClientMythTV::GetEPGForChannel(ADDON_HANDLE handle, const PVR_CHANN
         tag.iEpisodeNumber = 1;
         tag.iEpisodePartNumber = 1;
         tag.iSeriesNumber = 1;
-        tag.iFlags = EPG_TAG_FLAG_IS_SERIES;
       }
-      else if (it->second->title == "BBC News")
+      else if (it->second->seriesId != "")
         tag.iFlags = EPG_TAG_FLAG_IS_SERIES;
         
       tag.iStarRating = atoi(it->second->stars.c_str());
