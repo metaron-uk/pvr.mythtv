@@ -1061,7 +1061,6 @@ void PVRClientMythTV::ForceUpdateRecording(ProgramInfoMap::iterator it)
     MythProgramInfo prog(m_control->GetRecorded(it->second.ChannelID(), it->second.RecordingStartTime()));
     if (!prog.IsNull())
     {
-      CLockObject lock(m_recordingsLock);
       // Copy props
       prog.CopyProps(it->second);
       // Update recording
