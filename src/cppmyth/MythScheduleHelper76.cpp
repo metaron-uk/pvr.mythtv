@@ -146,7 +146,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
       break;
     case Myth::ST_KeywordSearch:
       entry.epgSearch = rule.Description();
-      entry.timerType = TIMER_TYPE_SEARCH_KEYWORD;
+      entry.timerType = TIMER_TYPE_SEARCH_TEXT;
       break;
     case Myth::ST_PeopleSearch:
       entry.epgSearch = rule.Description();
@@ -177,7 +177,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
     case TIMER_TYPE_RECORD_DAILY:
     case TIMER_TYPE_RECORD_ALL:
     case TIMER_TYPE_RECORD_SERIES:
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     case TIMER_TYPE_UNHANDLED:
       entry.startTime = rule.StartTime();
@@ -534,7 +534,7 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       break;
     }
 
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     {
       if (!entry.epgSearch.empty())
       {

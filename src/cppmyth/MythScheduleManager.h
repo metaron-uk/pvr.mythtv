@@ -41,7 +41,7 @@ typedef enum
   TIMER_TYPE_RECORD_DAILY,        // Record one showing every day
   TIMER_TYPE_RECORD_ALL,          // Record all showings
   TIMER_TYPE_RECORD_SERIES,       // Record series
-  TIMER_TYPE_SEARCH_KEYWORD,      // Search keyword
+  TIMER_TYPE_SEARCH_TEXT,         // Search text
   TIMER_TYPE_SEARCH_PEOPLE,       // Search people
   // Keep last
   TIMER_TYPE_UPCOMING,            // Upcoming
