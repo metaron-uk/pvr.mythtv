@@ -249,7 +249,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
     case TIMER_TYPE_RECORD_DAILY:
     case TIMER_TYPE_RECORD_ALL:
     case TIMER_TYPE_RECORD_SERIES:
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
       break;
     default:
@@ -283,7 +283,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_RECORD_DAILY:
     case TIMER_TYPE_RECORD_ALL:
     case TIMER_TYPE_RECORD_SERIES:
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     {
       if (entry.epgCheck && entry.epgInfo.IsNull())
@@ -321,7 +321,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DeleteTimer(const MythTimerE
     case TIMER_TYPE_RECORD_DAILY:
     case TIMER_TYPE_RECORD_ALL:
     case TIMER_TYPE_RECORD_SERIES:
-    case TIMER_TYPE_SEARCH_KEYWORD:
+    case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
       return DeleteRecordingRule(entry.entryIndex);
     default:
