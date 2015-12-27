@@ -90,7 +90,6 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_RECORD_ONE,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -110,7 +109,6 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_RECORD_WEEKLY,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_START_TIME |
             PVR_TIMER_TYPE_SUPPORTS_END_TIME |
@@ -132,7 +130,6 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_RECORD_DAILY,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_START_TIME |
             PVR_TIMER_TYPE_SUPPORTS_END_TIME |
@@ -155,7 +152,6 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_RECORD_ALL,
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
-            PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -195,6 +191,7 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_SUPPORTS_TITLE_EPG_MATCH |
+            PVR_TIMER_TYPE_SUPPORTS_FULLTEXT_EPG_MATCH |
             PVR_TIMER_TYPE_SUPPORTS_CHANNELS |
             PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
             PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
@@ -484,10 +481,12 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   {
     case Myth::ST_TitleSearch:
       entry.epgSearch = rule.Description();
+      entry.timerType = TIMER_TYPE_SEARCH_TEXT;
       break;
     case Myth::ST_KeywordSearch:
       entry.epgSearch = rule.Description();
       entry.timerType = TIMER_TYPE_SEARCH_TEXT;
+      entry.isFullTextEpgSearch = true;
       break;
     case Myth::ST_PeopleSearch:
       entry.epgSearch = rule.Description();
@@ -1074,7 +1073,10 @@ MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry
         }
         else
           rule.SetType(Myth::RT_AllRecord);
-        rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        if (entry.isFullTextEpgSearch)
+          rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        else
+          rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         rule.SetTitle(entry.title);
         // Backend use the subtitle/description to find program by keywords or title
         rule.SetSubtitle("");
