@@ -671,7 +671,7 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   return true;
 }
 
-MythRecordingRule MythScheduleHelper75::NewFromTemplate(const MythEPGInfo& epgInfo)
+MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythEPGInfo& epgInfo)
 {
   MythRecordingRule rule;
   // Load rule template from selected provider
@@ -772,7 +772,7 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
   if (withTemplate)
   {
     // Base on template
-    rule = NewFromTemplate(entry.epgInfo);
+    rule = NewRuleFromTemplate(entry.epgInfo);
     // Override template with timer settings
     rule.SetStartOffset(rule.StartOffset() + entry.startOffset);
     rule.SetEndOffset(rule.EndOffset() + entry.endOffset);
