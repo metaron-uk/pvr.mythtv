@@ -80,7 +80,7 @@ MythRecordingRule MythScheduleHelperNoHelper::NewFromTemplate(const MythEPGInfo&
   return MythRecordingRule();
 }
 
-MythRecordingRule MythScheduleHelperNoHelper::NewFromTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleHelperNoHelper::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
 {
   (void)entry;
   (void)withTemplate;

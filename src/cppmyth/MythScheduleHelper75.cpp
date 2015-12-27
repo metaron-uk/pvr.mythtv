@@ -471,7 +471,7 @@ bool MythScheduleHelper75::SameTimeslot(const MythRecordingRule& first, const My
 bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const
 {
   // Assign timer type regarding rule attributes. The match SHOULD be opposite to
-  // that which is applied in function 'NewFromTimer'
+  // that which is applied in function 'RuleFromMythTimer'
 
   // Check rule flag for this entry
   entry.isRule = true;
@@ -864,7 +864,7 @@ MythRecordingRule MythScheduleHelper75::NewFromTemplate(const MythEPGInfo& epgIn
   return rule;
 }
 
-MythRecordingRule MythScheduleHelper75::NewFromTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
 {
   // Create a recording rule regarding timer attributes. The match SHOULD be opposite to
   // that which is applied in function 'FillTimerEntry'
