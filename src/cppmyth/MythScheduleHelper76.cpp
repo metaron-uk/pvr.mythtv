@@ -255,7 +255,7 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
   if (withTemplate)
   {
     // Base on template
-    rule = NewFromTemplate(entry.epgInfo);
+    rule = NewRuleFromTemplate(entry.epgInfo);
     // Override template with timer settings
     rule.SetStartOffset(rule.StartOffset() + entry.startOffset);
     rule.SetEndOffset(rule.EndOffset() + entry.endOffset);
