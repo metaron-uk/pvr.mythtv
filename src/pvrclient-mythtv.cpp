@@ -1577,7 +1577,7 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iTimerType = static_cast<unsigned>((*it)->timerType);
     PVR_STRCPY(tag.strTitle, (*it)->title.c_str());
     PVR_STRCPY(tag.strEpgSearchString, (*it)->epgSearch.c_str());
-    tag.bFullTextEpgSearch = false;
+    tag.bFullTextEpgSearch = (*it)->isFullTextEpgSearch;
     PVR_STRCPY(tag.strDirectory, ""); // not implemented
     PVR_STRCPY(tag.strSummary, (*it)->description.c_str());
     tag.iPriority = (*it)->priority;
@@ -1870,6 +1870,7 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
   entry.timerType = static_cast<TimerTypeId>(timer.iTimerType);
   entry.title.assign(timer.strTitle);
   entry.description.assign(timer.strSummary);
+  entry.isFullTextEpgSearch = timer.bFullTextEpgSearch;
   entry.category.assign(m_categories.Category(timer.iGenreType));
   entry.startOffset = timer.iMarginStart;
   entry.endOffset = timer.iMarginEnd;

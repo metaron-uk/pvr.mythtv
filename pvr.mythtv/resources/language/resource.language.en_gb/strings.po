@@ -382,7 +382,7 @@ msgid "Record series"
 msgstr ""
 
 msgctxt "#30467"
-msgid "Search keyword"
+msgid "Search text"
 msgstr ""
 
 msgctxt "#30468"
