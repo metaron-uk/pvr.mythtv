@@ -249,7 +249,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
     default:
       return MSM_ERROR_NOT_IMPLEMENTED;
   }
-  MythRecordingRule rule = m_versionHelper->NewFromTimer(entry, true);
+  MythRecordingRule rule = m_versionHelper->RuleFromMythTimer(entry, true);
   MSM_ERROR ret = AddRecordingRule(rule);
   return ret;
 }
@@ -263,7 +263,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     {
-      MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry, false);
       return UpdateRecording(entry.entryIndex, newrule);
     }
     case TIMER_TYPE_MANUAL_SEARCH:
@@ -281,7 +281,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
         XBMC->Log(LOG_ERROR, "%s: index %u requires valid EPG info", __FUNCTION__, entry.entryIndex);
         return MSM_ERROR_NOT_IMPLEMENTED;
       }
-      MythRecordingRule newrule = m_versionHelper->NewFromTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry, false);
       return UpdateRecordingRule(entry.entryIndex, newrule);
     }
     default:
@@ -954,10 +954,10 @@ bool MythScheduleManager::FillTimerEntryWithUpcoming(MythTimerEntry& entry, cons
   return m_versionHelper->FillTimerEntryWithUpcoming(entry, recording);
 }
 
-MythRecordingRule MythScheduleManager::NewFromTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleManager::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
 {
   CLockObject lock(m_lock);
-  return m_versionHelper->NewFromTimer(entry, withTemplate);
+  return m_versionHelper->RuleFromMythTimer(entry, withTemplate);
 }
 
 bool MythScheduleManager::FixRule(MythRecordingRule& rule) const

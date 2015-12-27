@@ -52,7 +52,7 @@ using namespace ADDON;
 bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const
 {
   // Assign timer type regarding rule attributes. The match SHOULD be opposite to
-  // that which is applied in function 'NewFromTimer'
+  // that which is applied in function 'RuleFromMythTimer'
 
   MythRecordingRule rule = node.GetRule();
   XBMC->Log(LOG_DEBUG, "76::%s: RecordID %u", __FUNCTION__, rule.RecordID());
@@ -236,7 +236,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   return true;
 }
 
-MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
 {
   // Create a recording rule regarding timer attributes. The match SHOULD be opposite to
   // that which is applied in function 'FillTimerEntry'
