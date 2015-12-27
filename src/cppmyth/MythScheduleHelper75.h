@@ -34,7 +34,7 @@ public:
   virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const;
   virtual bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
   virtual bool FillTimerEntryWithUpcoming(MythTimerEntry& entry, const MythProgramInfo& recording) const;
-  virtual MythRecordingRule NewFromTemplate(const MythEPGInfo& epgInfo);
+  virtual MythRecordingRule NewRuleFromTemplate(const MythEPGInfo& epgInfo);
   virtual MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate);
   virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording);
   virtual MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythProgramInfo& recording);
