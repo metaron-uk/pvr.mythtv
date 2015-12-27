@@ -68,6 +68,7 @@ struct MythTimerEntry
   time_t        startTime;
   time_t        endTime;
   std::string   epgSearch;
+  bool          isFullTextEpgSearch;
   std::string   title;
   std::string   description;
   std::string   category;
@@ -89,6 +90,7 @@ struct MythTimerEntry
   , chanid(0)
   , startTime(0)
   , endTime(0)
+  , isFullTextEpgSearch(0)
   , startOffset(0)
   , endOffset(0)
   , priority(0)

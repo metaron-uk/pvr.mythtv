@@ -147,10 +147,12 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   {
     case Myth::ST_TitleSearch:
       entry.epgSearch = rule.Description();
+      entry.timerType = TIMER_TYPE_SEARCH_TEXT;
       break;
     case Myth::ST_KeywordSearch:
       entry.epgSearch = rule.Description();
       entry.timerType = TIMER_TYPE_SEARCH_TEXT;
+      entry.isFullTextEpgSearch = true;
       break;
     case Myth::ST_PeopleSearch:
       entry.epgSearch = rule.Description();
@@ -548,7 +550,10 @@ MythRecordingRule MythScheduleHelper76::NewFromTimer(const MythTimerEntry& entry
       if (!entry.epgSearch.empty())
       {
         rule.SetType(Myth::RT_AllRecord);
-        rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        if (entry.isFullTextEpgSearch)
+          rule.SetSearchType(Myth::ST_KeywordSearch); // Search keyword
+        else
+          rule.SetSearchType(Myth::ST_TitleSearch); // Search title
         if (entry.HasChannel())
         {
           rule.SetFilter(Myth::FM_ThisChannel);
