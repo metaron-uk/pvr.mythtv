@@ -1528,7 +1528,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
   MythTimerEntryList entries;
   {
     CLockObject lock(m_lock);
-    m_PVRtimerMemorandum.clear();
     if (m_scheduleManager)
       entries = m_scheduleManager->GetTimerEntries();
   }
@@ -1612,9 +1611,6 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iGenreType = genre & 0xF0;
     tag.iGenreSubType = genre & 0x0F;
 
-    // Add it to memorandom: cf UpdateTimer()
-    MYTH_SHARED_PTR<PVR_TIMER> pTag = MYTH_SHARED_PTR<PVR_TIMER>(new PVR_TIMER(tag));
-    m_PVRtimerMemorandum.insert(std::make_pair((unsigned int&)tag.iClientIndex, pTag));
     PVR->TransferTimerEntry(handle, &tag);
     if (g_bExtraDebug)
       XBMC->Log(LOG_DEBUG, "%s: #%u: IN=%d RS=%d type %u state %d parent %u autoexpire %d", __FUNCTION__,
@@ -1924,16 +1920,7 @@ PVR_ERROR PVRClientMythTV::UpdateTimer(const PVR_TIMER &timer)
   }
   XBMC->Log(LOG_DEBUG, "%s: title: %s, start: %ld, end: %ld, chanID: %u", __FUNCTION__, timer.strTitle, timer.startTime, timer.endTime, timer.iClientChannelUid);
   MythTimerEntry entry;
-  // Restore discarded info by PVR manager from our saved timer
-  {
-    CLockObject lock(m_lock);
-    std::map<unsigned int, MYTH_SHARED_PTR<PVR_TIMER> >::const_iterator it = m_PVRtimerMemorandum.find(timer.iClientIndex);
-    if (it == m_PVRtimerMemorandum.end())
-      return PVR_ERROR_INVALID_PARAMETERS;
-    PVR_TIMER newTimer = timer;
-    newTimer.iEpgUid = it->second->iEpgUid;
-    entry = PVRtoTimerEntry(newTimer, true);
-  }
+  entry = PVRtoTimerEntry(timer, true);
   MythScheduleManager::MSM_ERROR ret = m_scheduleManager->UpdateTimer(entry);
   if (ret == MythScheduleManager::MSM_ERROR_FAILED)
     return PVR_ERROR_FAILED;
