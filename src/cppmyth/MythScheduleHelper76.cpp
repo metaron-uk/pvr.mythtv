@@ -159,9 +159,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
       entry.epgSearch = rule.Description();
       entry.timerType = TIMER_TYPE_UNHANDLED;
       break;
-    case Myth::ST_NoSearch: // EPG based
-      entry.epgCheck = true;
-      entry.epgSearch = rule.Title();
+    case Myth::ST_NoSearch:
       break;
     case Myth::ST_ManualSearch: // Manual
       entry.chanid = rule.ChannelID();
