@@ -732,6 +732,12 @@ PVR_ERROR GetAddonCapabilities(PVR_ADDON_CAPABILITIES *pCapabilities)
     pCapabilities->bSupportsRecordings            = true;
     pCapabilities->bSupportsRecordingsUndelete    = true;
     pCapabilities->bSupportsRecordingPlayCount    = (version < 80 ? false : true);
+    if (version == 77)
+    {
+      XBMC->Log(LOG_INFO, "Patched mythtv 0.27 with UpdateRecordedWatchedStatus backport assumed. Using backend watched status.");
+      XBMC->Log(LOG_INFO, "See http://forum.kodi.tv/showthread.php?tid=228044 for more details.");
+      pCapabilities->bSupportsRecordingPlayCount = true;
+    }
     pCapabilities->bSupportsLastPlayedPosition    = (version < 88 || !g_bUseBackendBookmarks ? false : true);
     pCapabilities->bSupportsRecordingEdl          = true;
     pCapabilities->bSupportsRecordingsRename      = false;
