@@ -1925,13 +1925,6 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
     unsigned bid;
     time_t bst;
     MythEPGInfo::BreakBroadcastID(timer.iEpgUid, &bid, &bst);
-    XBMC->Log(LOG_DEBUG, "%s: broadcastid=%u chanid=%u localtime=%s", __FUNCTION__, (unsigned)timer.iEpgUid, bid, Myth::TimeToString(bst, false).c_str());
-    // Retrieve broadcast using prior selected channel if valid else use original channel
-    if (hasChannel)
-    {
-      bid = static_cast<unsigned>(timer.iClientChannelUid);
-      XBMC->Log(LOG_DEBUG, "%s: original chanid is overridden with id %u", __FUNCTION__, bid);
-    }
     Myth::ProgramMapPtr epg = m_control->GetProgramGuide(bid, bst, bst);
     Myth::ProgramMap::iterator epgit = epg->begin();
     // Get the last and longer
@@ -1944,11 +1937,9 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
     if (epgit != epg->end())
     {
       entry.epgInfo = MythEPGInfo(epgit->second);
-      entry.chanid = epgit->second->channel.chanId;
-      entry.callsign = epgit->second->channel.callSign;
-      st = entry.epgInfo.StartTime();
-      et = entry.epgInfo.EndTime();
-      XBMC->Log(LOG_NOTICE, "%s: select EPG program: %u %lu %s", __FUNCTION__, entry.chanid, st, entry.epgInfo.Title().c_str());
+      XBMC->Log(LOG_DEBUG,"%s: Found EPG program: %s (%s) %s (%s)", __FUNCTION__,
+                          entry.epgInfo.ProgramID().c_str(), entry.epgInfo.SeriesID().c_str(),
+                          entry.epgInfo.Title().c_str(), entry.epgInfo.Subtitle().c_str());
     }
     else
     {
@@ -1957,7 +1948,7 @@ MythTimerEntry PVRClientMythTV::PVRtoTimerEntry(const PVR_TIMER& timer, bool che
     }
   }
   // Fill channel
-  if (!hasEpg && hasChannel)
+  if (hasChannel)
   {
     MythChannel channel = FindChannel(timer.iClientChannelUid);
     if (!channel.IsNull())
