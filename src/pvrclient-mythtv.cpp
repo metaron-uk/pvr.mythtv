@@ -1601,7 +1601,45 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     tag.iLifetime = (*it)->expiration;
     tag.iRecordingGroup = (*it)->recordingGroup;
     tag.firstDay = (*it)->startTime; // using startTime
-    tag.iWeekdays = PVR_WEEKDAY_NONE; // not implemented
+    switch ((*it)->timerType)
+    {
+    case TIMER_TYPE_RECORD_WEEKLY:       // Record one showing every week
+      //Display the active day (e.g. 'Tuesdays')
+      struct tm myTime;
+      localtime_r(&(*it)->startTime, &myTime);
+      if (myTime.tm_wday == 0) tag.iWeekdays = PVR_WEEKDAY_SUNDAY;
+      if (myTime.tm_wday == 1) tag.iWeekdays = PVR_WEEKDAY_MONDAY;
+      if (myTime.tm_wday == 2) tag.iWeekdays = PVR_WEEKDAY_TUESDAY;
+      if (myTime.tm_wday == 3) tag.iWeekdays = PVR_WEEKDAY_WEDNESDAY;
+      if (myTime.tm_wday == 4) tag.iWeekdays = PVR_WEEKDAY_THURSDAY;
+      if (myTime.tm_wday == 5) tag.iWeekdays = PVR_WEEKDAY_FRIDAY;
+      if (myTime.tm_wday == 6) tag.iWeekdays = PVR_WEEKDAY_SATURDAY;
+      break;
+    case TIMER_TYPE_RECORD_DAILY:        // Record one showing every day
+      tag.iWeekdays = PVR_WEEKDAY_ALLDAYS;
+      break;
+    case TIMER_TYPE_RECORD_ONE:          // Record one showing
+    case TIMER_TYPE_RECORD_ALL:          // Record all showings
+    case TIMER_TYPE_RECORD_SERIES:       // Record series
+    case TIMER_TYPE_SEARCH_TEXT:         // Search text
+    case TIMER_TYPE_SEARCH_PEOPLE:       // Search people
+    case TIMER_TYPE_UNHANDLED:           // Unhandled rule
+      //Display start day only, not time
+      tag.iWeekdays = PVR_WEEKDAY_ALLDAYS;
+      tag.bStartAnyTime = true;
+      tag.bEndAnyTime = true;
+      break;
+    case TIMER_TYPE_MANUAL_SEARCH:       // Manual record
+    case TIMER_TYPE_THIS_SHOWING:        // Record This showing
+    case TIMER_TYPE_UPCOMING:            // Upcoming
+    case TIMER_TYPE_OVERRIDE:            // Override
+    case TIMER_TYPE_DONT_RECORD:         // Don't record
+    case TIMER_TYPE_UPCOMING_MANUAL:     // Upcoming manual
+    case TIMER_TYPE_ZOMBIE:              // Zombie
+      // Display start and end times and day
+      tag.iWeekdays = PVR_WEEKDAY_NONE;
+      break;
+    }
     tag.iPreventDuplicateEpisodes = static_cast<unsigned>((*it)->dupMethod);
     if ((*it)->epgCheck)
       tag.iEpgUid = MythEPGInfo::MakeBroadcastID(FindPVRChannelUid((*it)->epgInfo.ChannelID()) , (*it)->epgInfo.StartTime());
