@@ -182,7 +182,7 @@ public:
   MythTimerTypeList GetTimerTypes();
   bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const;
   bool FillTimerEntryWithUpcoming(MythTimerEntry& entry, const MythProgramInfo& recording) const;
-  MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate);
+  MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry);
   bool FixRule(MythRecordingRule& rule) const;
 
   MythRecordingRuleList GetTemplateRules() const;
@@ -203,7 +203,7 @@ public:
     virtual bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const = 0;
     virtual bool FillTimerEntryWithUpcoming(MythTimerEntry& entry, const MythProgramInfo& recording) const = 0;
     virtual MythRecordingRule NewRuleFromTemplate(const MythTimerEntry& entry) = 0;
-    virtual MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate) = 0;
+    virtual MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry) = 0;
     virtual bool FixRule(MythRecordingRule& rule) const = 0;
     virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;
     virtual MythRecordingRule MakeOverride(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;

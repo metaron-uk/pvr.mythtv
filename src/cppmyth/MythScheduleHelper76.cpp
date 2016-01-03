@@ -250,7 +250,7 @@ bool MythScheduleHelper76::FillTimerEntryWithRule(MythTimerEntry& entry, const M
   return true;
 }
 
-MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& entry)
 {
   // Create a recording rule regarding timer attributes. The match SHOULD be opposite to
   // that which is applied in function 'FillTimerEntry'
