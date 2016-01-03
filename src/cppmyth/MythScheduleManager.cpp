@@ -249,7 +249,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::SubmitTimer(const MythTimerE
     default:
       return MSM_ERROR_NOT_IMPLEMENTED;
   }
-  MythRecordingRule rule = m_versionHelper->RuleFromMythTimer(entry, true);
+  MythRecordingRule rule = m_versionHelper->RuleFromMythTimer(entry);
   MSM_ERROR ret = AddRecordingRule(rule);
   return ret;
 }
@@ -263,7 +263,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     {
-      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry);
       return UpdateRecording(entry.entryIndex, newrule);
     }
     case TIMER_TYPE_MANUAL_SEARCH:
@@ -276,7 +276,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     {
-      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry, false);
+      MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry);
       return UpdateRecordingRule(entry.entryIndex, newrule);
     }
     default:
@@ -953,10 +953,10 @@ bool MythScheduleManager::FillTimerEntryWithUpcoming(MythTimerEntry& entry, cons
   return m_versionHelper->FillTimerEntryWithUpcoming(entry, recording);
 }
 
-MythRecordingRule MythScheduleManager::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleManager::RuleFromMythTimer(const MythTimerEntry& entry)
 {
   CLockObject lock(m_lock);
-  return m_versionHelper->RuleFromMythTimer(entry, withTemplate);
+  return m_versionHelper->RuleFromMythTimer(entry);
 }
 
 bool MythScheduleManager::FixRule(MythRecordingRule& rule) const
