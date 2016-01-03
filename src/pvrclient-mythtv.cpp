@@ -590,6 +590,45 @@ int PVRClientMythTV::GetNumChannels()
   return m_PVRChannels.size();
 }
 
+PVR_CHANNEL PVRClientMythTV::GetFirstChannel()
+{
+  if (g_bExtraDebug)
+    XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
+
+  CLockObject lock(m_channelsLock);
+  PVR_CHANNEL tag;
+  memset(&tag, 0, sizeof(PVR_CHANNEL));
+
+  PVRChannelList::const_iterator it = m_PVRChannels.begin();
+  if (it != m_PVRChannels.end())
+  {
+    ChannelIdMap::const_iterator itm = m_channelsById.find(it->iUniqueId);
+    if (itm != m_channelsById.end() && !itm->second.IsNull())
+    {
+      PVR_CHANNEL tag;
+      memset(&tag, 0, sizeof(PVR_CHANNEL));
+
+      tag.iUniqueId = itm->first;
+      tag.iChannelNumber = itm->second.NumberMajor();
+      tag.iSubChannelNumber = itm->second.NumberMinor();
+      PVR_STRCPY(tag.strChannelName, itm->second.Name().c_str());
+      tag.bIsHidden = !itm->second.Visible();
+      tag.bIsRadio = itm->second.IsRadio();
+
+      if (m_fileOps)
+        PVR_STRCPY(tag.strIconPath, m_fileOps->GetChannelIconPath(itm->second).c_str());
+      else
+        PVR_STRCPY(tag.strIconPath, "");
+
+      // Unimplemented
+      PVR_STRCPY(tag.strStreamURL, "");
+      PVR_STRCPY(tag.strInputFormat, "");
+      tag.iEncryptionSystem = 0;
+    }
+  }
+  return tag;
+}
+
 PVR_ERROR PVRClientMythTV::GetChannels(ADDON_HANDLE handle, bool bRadio)
 {
   if (g_bExtraDebug)

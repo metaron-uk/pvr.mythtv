@@ -84,6 +84,7 @@ public:
 
   // Channels
   int GetNumChannels();
+  PVR_CHANNEL GetFirstChannel();
   PVR_ERROR GetChannels(ADDON_HANDLE handle, bool bRadio);
 
   // Channel groups
