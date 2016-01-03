@@ -266,7 +266,7 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
     //This is the first time we've seen this entry - it is probably a new one
     XBMC->Log(LOG_DEBUG, "76::%s: Creating new template for entry %s", __FUNCTION__, entry.title.c_str());
     //Create an entry from the template
-    rule = NewRuleFromTemplate(entry.epgInfo);
+    rule = NewRuleFromTemplate(entry);
   }
   else
   {
@@ -279,7 +279,7 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
     case TIMER_TYPE_ZOMBIE:
       //Not a 'rule' type
       XBMC->Log(LOG_DEBUG, "76::%s: Minimal template used for 'upcoming' entry %s", __FUNCTION__, entry.title.c_str());
-      rule = NewRuleFromTemplate(entry.epgInfo);
+      rule = NewRuleFromTemplate(entry);
       break;
 
     default:
