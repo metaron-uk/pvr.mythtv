@@ -792,11 +792,13 @@ MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythTimerEntry
       {
         if (it->Category() == epgInfo.Category())
         {
+          XBMC->Log(LOG_INFO, "75::%s: Template found for category '%s'", __FUNCTION__, epgInfo.Category().c_str());
           tplIt = it;
           break;
         }
         if (it->Category() == epgInfo.CategoryType())
         {
+          XBMC->Log(LOG_INFO, "75::%s: Template found for category type '%s'", __FUNCTION__, epgInfo.CategoryType().c_str());
           tplIt = it;
           continue;
         }
@@ -805,7 +807,7 @@ MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythTimerEntry
       }
       if (tplIt != templates.end())
       {
-        XBMC->Log(LOG_INFO, "75::%s: Overriding the rule with template %u '%s'", __FUNCTION__, (unsigned)tplIt->RecordID(), tplIt->Title().c_str());
+        XBMC->Log(LOG_INFO, "75::%s: Creating rule based on backend template %u '%s'", __FUNCTION__, (unsigned)tplIt->RecordID(), tplIt->Title().c_str());
         rule.SetPriority(tplIt->Priority());
         rule.SetStartOffset(tplIt->StartOffset());
         rule.SetEndOffset(tplIt->EndOffset());
@@ -830,10 +832,11 @@ MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythTimerEntry
         rule.SetCategory(tplIt->Category());
       }
       else
-        XBMC->Log(LOG_INFO, "75::%s: No template found for the category '%s'", __FUNCTION__, epgInfo.Category().c_str());
+        XBMC->Log(LOG_INFO, "75::%s: No template found. Using blank rule.", __FUNCTION__);
     }
     break;
   case 0: // Template provider is 'Internal', then set rule with settings
+    XBMC->Log(LOG_INFO, "75::%s: Using pvr.mythtv client internal template.", __FUNCTION__);
     rule.SetAutoCommFlag(g_bRecAutoCommFlag);
     rule.SetAutoMetadata(g_bRecAutoMetadata);
     rule.SetAutoTranscode(g_bRecAutoTranscode);
@@ -865,6 +868,42 @@ MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythTimerEntry
       }
     }
   }
+
+  //set sane defaults based on the MythTimerEntry entry where available
+  //All rules must have a valid channelID and callsign or the backend will reject
+  if (entry.chanid != 0 && !entry.callsign.empty())
+  {
+    rule.SetChannelID(entry.chanid);
+    rule.SetCallsign(entry.callsign);
+  }
+  else if (!entry.epgInfo.IsNull())
+  {
+    rule.SetChannelID(entry.epgInfo.ChannelID());
+    rule.SetCallsign(entry.epgInfo.Callsign());
+  }
+  else
+  {
+    rule.SetChannelID(100);
+    rule.SetCallsign("Dummy");
+  }
+  //All rules must have an end time after the start time or the backend will reject
+  if (entry.startTime > 0)
+  {
+    rule.SetStartTime(entry.startTime);
+    rule.SetEndTime(entry.endTime);
+  }
+  else if (!entry.epgInfo.IsNull())
+  {
+    rule.SetStartTime(entry.epgInfo.StartTime());
+    rule.SetEndTime(entry.epgInfo.EndTime());
+  }
+  else
+  {
+    rule.SetStartTime(time(0));
+  }
+  if (rule.EndTime() < rule.StartTime())
+    rule.SetEndTime(rule.StartTime()+2);
+
   return rule;
 }
 
@@ -930,28 +969,6 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
   rule.SetNewExpiresOldRecord(exr.maxNewest);
   rule.SetRecordingGroup(GetRuleRecordingGroupName(entry.recordingGroup));
   rule.SetInactive(entry.isInactive);
-
-  //Apply defaults for a new timer from kodi (prevents invalid rule durations)
-  if (entry.entryIndex == PVR_TIMER_NO_CLIENT_INDEX)
-  {
-    rule.SetStartTime(entry.startTime);
-    rule.SetEndTime(entry.endTime);
-    if (rule.StartTime() == 0)
-      rule.SetStartTime(time(0));
-    if (rule.EndTime() < rule.StartTime())
-      rule.SetEndTime(rule.StartTime()+2);
-
-    if (!entry.epgInfo.IsNull())
-    {
-      rule.SetChannelID(entry.epgInfo.ChannelID());
-      rule.SetCallsign(entry.epgInfo.Callsign());
-    }
-    else
-    {
-      rule.SetChannelID(100);
-      rule.SetCallsign("Dummy");
-    }
-  }
 
   switch (entry.timerType)
   {
