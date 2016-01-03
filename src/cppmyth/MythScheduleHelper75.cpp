@@ -517,28 +517,44 @@ bool MythScheduleHelper75::FillTimerEntryWithRule(MythTimerEntry& entry, const M
     case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
     case TIMER_TYPE_UNHANDLED:
-      entry.startTime = rule.StartTime();
-      entry.endTime = rule.EndTime();
-      // For all repeating fix timeslot as needed
-      if (!entry.HasTimeSlot())
+      // For all rules without a time, set time based on next/last recording
+      if (difftime(rule.NextRecording(), 0) > 0)
       {
-        if (difftime(rule.NextRecording(), 0) > 0)
-        {
-          // fill timeslot starting at next recording
-          entry.startTime = rule.NextRecording(); // it includes offset correction
-          // WARNING: if next recording has been overriden then offset could be different
-          timeadd(&entry.startTime, INTERVAL_MINUTE * rule.StartOffset()); // remove start offset
-          entry.endTime = 0; // any time
-        }
-        else if (difftime(rule.LastRecorded(), 0) > 0)
-        {
-          // fill timeslot starting at last recorded
-          entry.startTime = rule.LastRecorded(); // it includes offset correction
-          // WARNING: if last recorded has been overriden then offset could be different
-          timeadd(&entry.startTime, INTERVAL_MINUTE * rule.StartOffset()); // remove start offset
-          entry.endTime = 0; // any time
-        }
+        // fill timeslot starting at next recording
+        entry.startTime = rule.NextRecording(); // it includes offset correction
+        // WARNING: if next recording has been overriden then offset could be different
+        timeadd(&entry.startTime, INTERVAL_MINUTE * rule.StartOffset()); // remove start offset
+        if (!rule.Inactive())
+          entry.recordingStatus = Myth::RS_WILL_RECORD;
       }
+      else if (difftime(rule.LastRecorded(), 0) > 0)
+      {
+        // fill timeslot starting at last recorded
+        entry.startTime = rule.LastRecorded(); // it includes offset correction
+        // WARNING: if last recorded has been overriden then offset could be different
+        timeadd(&entry.startTime, INTERVAL_MINUTE * rule.StartOffset()); // remove start offset
+        if (!rule.Inactive())
+          entry.recordingStatus = Myth::RS_RECORDED;
+      }
+      else
+      {
+        // Fall back to the timeslot used when the rule was created
+        entry.startTime = rule.StartTime();
+        entry.recordingStatus = Myth::RS_UNKNOWN;
+      }
+
+      if (entry.timerType == TIMER_TYPE_RECORD_WEEKLY || entry.timerType == TIMER_TYPE_RECORD_DAILY)
+      {
+        // Something which needs a sensible end time, add rule duration or 2 seconds if rule has no duration
+        entry.endTime = entry.startTime;
+        if (rule.EndTime() - rule.StartTime() > 0)
+          timeadd(&entry.endTime, rule.EndTime() - rule.StartTime());
+        else
+          timeadd(&entry.endTime, 2);
+      }
+      else
+        entry.endTime = 0; // any time
+
       // For all repeating set summary status
       if (node.HasConflict())
         entry.recordingStatus = Myth::RS_CONFLICT;
