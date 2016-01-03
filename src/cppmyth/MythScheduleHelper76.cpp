@@ -313,28 +313,6 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
   rule.SetRecordingGroup(GetRuleRecordingGroupName(entry.recordingGroup));
   rule.SetInactive(entry.isInactive);
 
-  //Apply defaults for a new timer from kodi (prevents invalid rule durations)
-  if (entry.entryIndex == PVR_TIMER_NO_CLIENT_INDEX)
-  {
-    rule.SetStartTime(entry.startTime);
-    rule.SetEndTime(entry.endTime);
-    if (rule.StartTime() == 0)
-      rule.SetStartTime(time(0));
-    if (rule.EndTime() < rule.StartTime())
-      rule.SetEndTime(rule.StartTime()+2);
-
-    if (!entry.epgInfo.IsNull())
-    {
-      rule.SetChannelID(entry.epgInfo.ChannelID());
-      rule.SetCallsign(entry.epgInfo.Callsign());
-    }
-    else
-    {
-      rule.SetChannelID(100);
-      rule.SetCallsign("Dummy");
-    }
-  }
-
   switch (entry.timerType)
   {
     case TIMER_TYPE_MANUAL_SEARCH:
