@@ -72,10 +72,9 @@ MythRecordingRule MythScheduleHelperNoHelper::NewRuleFromTemplate(const MythTime
   return MythRecordingRule();
 }
 
-MythRecordingRule MythScheduleHelperNoHelper::RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate)
+MythRecordingRule MythScheduleHelperNoHelper::RuleFromMythTimer(const MythTimerEntry& entry)
 {
   (void)entry;
-  (void)withTemplate;
   return MythRecordingRule();
 }
 
