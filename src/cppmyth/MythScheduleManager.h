@@ -206,7 +206,7 @@ public:
     virtual bool SameTimeslot(const MythRecordingRule& first, const MythRecordingRule& second) const = 0;
     virtual bool FillTimerEntryWithRule(MythTimerEntry& entry, const MythRecordingRuleNode& node) const = 0;
     virtual bool FillTimerEntryWithUpcoming(MythTimerEntry& entry, const MythProgramInfo& recording) const = 0;
-    virtual MythRecordingRule NewRuleFromTemplate(const MythEPGInfo& epgInfo) = 0;
+    virtual MythRecordingRule NewRuleFromTemplate(const MythTimerEntry& entry) = 0;
     virtual MythRecordingRule RuleFromMythTimer(const MythTimerEntry& entry, bool withTemplate) = 0;
     virtual bool FixRule(MythRecordingRule& rule) const = 0;
     virtual MythRecordingRule MakeDontRecord(const MythRecordingRule& rule, const MythProgramInfo& recording) = 0;

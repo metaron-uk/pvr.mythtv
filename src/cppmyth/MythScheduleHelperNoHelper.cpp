@@ -66,9 +66,9 @@ bool MythScheduleHelperNoHelper::FillTimerEntryWithUpcoming(MythTimerEntry& entr
   return true;
 }
 
-MythRecordingRule MythScheduleHelperNoHelper::NewRuleFromTemplate(const MythEPGInfo& epgInfo)
+MythRecordingRule MythScheduleHelperNoHelper::NewRuleFromTemplate(const MythTimerEntry& entry)
 {
-  (void)epgInfo;
+  (void)entry;
   return MythRecordingRule();
 }
 

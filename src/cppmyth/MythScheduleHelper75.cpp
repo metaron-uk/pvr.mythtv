@@ -776,10 +776,11 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   return true;
 }
 
-MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythEPGInfo& epgInfo)
+MythRecordingRule MythScheduleHelper75::NewRuleFromTemplate(const MythTimerEntry& entry)
 {
-  MythRecordingRule rule;
+  MythEPGInfo epgInfo = entry.epgInfo;
   // Load rule template from selected provider
+  MythRecordingRule rule;
   switch (g_iRecTemplateType)
   {
   case 1: // Template provider is 'MythTV', then load the template from backend.
@@ -879,7 +880,7 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
     //This is the first time we've seen this entry - it is probably a new one
     XBMC->Log(LOG_DEBUG, "75::%s: Creating new template for entry %s", __FUNCTION__, entry.title.c_str());
     //Create an entry from the template
-    rule = NewRuleFromTemplate(entry.epgInfo);
+    rule = NewRuleFromTemplate(entry);
   }
   else
   {
@@ -892,7 +893,7 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
     case TIMER_TYPE_ZOMBIE:
       //Not a 'rule' type
       XBMC->Log(LOG_DEBUG, "75::%s: Minimal template used for 'upcoming' entry %s", __FUNCTION__, entry.title.c_str());
-      rule = NewRuleFromTemplate(entry.epgInfo);
+      rule = NewRuleFromTemplate(entry);
       break;
 
     default:
