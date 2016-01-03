@@ -1,4 +1,5 @@
 - fix timer update caused by invalid epg ID
+- Updated language files from Transifex
 - Support protocol 0.28-pre:88
 
 v3.4.2
