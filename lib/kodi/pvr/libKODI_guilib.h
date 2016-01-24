@@ -36,7 +36,7 @@ typedef void* GUIHANDLE;
 #endif
 
 /* current ADDONGUI API version */
-#define KODI_GUILIB_API_VERSION "5.10.0"
+#define KODI_GUILIB_API_VERSION "5.11.0"
 
 /* min. ADDONGUI API version */
 #define KODI_GUILIB_MIN_API_VERSION "5.10.0"
