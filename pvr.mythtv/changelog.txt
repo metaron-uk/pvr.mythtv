@@ -1,3 +1,8 @@
+
+v4.1.0
+- Initial Kodi Krypton version
+- Updated to PVR API v4.2.0
+- Updated to GUI API v5.11.0
 - fix timer update caused by invalid epg ID
 - Updated language files from Transifex
 - Support protocol 0.28-pre:88
