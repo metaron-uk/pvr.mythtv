@@ -69,9 +69,9 @@ set(MYTHTV_SOURCES src/avinfo.cpp
 
 add_subdirectory(lib/cppmyth)
 add_subdirectory(lib/kodi)
-add_subdirectory(lib/platform)
+add_subdirectory(lib/p8-platform)
 
-set(DEPLIBS platform cppmyth)
+set(DEPLIBS p8-platform cppmyth)
 if(WIN32)
   list(APPEND DEPLIBS ws2_32)
 else()
