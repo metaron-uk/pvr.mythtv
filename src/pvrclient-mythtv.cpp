@@ -828,9 +828,6 @@ PVR_ERROR PVRClientMythTV::GetRecordings(ADDON_HANDLE handle)
 
   CLockObject lock(m_recordingsLock);
 
-  // Load recordings list
-  if (m_recordings.empty())
-    FillRecordings();
   // Setup series
   if (g_iGroupRecordings == GROUP_RECORDINGS_ONLY_FOR_SERIES)
   {
@@ -969,9 +966,6 @@ PVR_ERROR PVRClientMythTV::GetDeletedRecordings(ADDON_HANDLE handle)
 
   CLockObject lock(m_recordingsLock);
 
-  // Load recordings list
-  if (m_recordings.empty())
-    FillRecordings();
   // Transfer to PVR
   for (ProgramInfoMap::iterator it = m_recordings.begin(); it != m_recordings.end(); ++it)
   {
