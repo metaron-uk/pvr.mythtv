@@ -929,6 +929,9 @@ PVR_ERROR PVRClientMythTV::GetRecordings(ADDON_HANDLE handle)
       PVR_STRCPY(tag.strPlotOutline, "");
       PVR_STRCPY(tag.strStreamURL, "");
 
+      /* TODO: PVR API 5.0.0: Implement this */
+      tag.iChannelUid = PVR_CHANNEL_INVALID_UID;
+
       PVR->TransferRecordingEntry(handle, &tag);
     }
   }
@@ -1033,6 +1036,9 @@ PVR_ERROR PVRClientMythTV::GetDeletedRecordings(ADDON_HANDLE handle)
       tag.iPriority = 0;
       PVR_STRCPY(tag.strPlotOutline, "");
       PVR_STRCPY(tag.strStreamURL, "");
+
+      /* TODO: PVR API 5.0.0: Implement this */
+      tag.iChannelUid = PVR_CHANNEL_INVALID_UID;
 
       PVR->TransferRecordingEntry(handle, &tag);
     }
