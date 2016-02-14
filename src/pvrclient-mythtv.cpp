@@ -1671,6 +1671,9 @@ PVR_ERROR PVRClientMythTV::GetTimers(ADDON_HANDLE handle)
     case TIMER_TYPE_MANUAL_SEARCH:       // Manual record
     case TIMER_TYPE_THIS_SHOWING:        // Record This showing
     case TIMER_TYPE_UPCOMING:            // Upcoming
+    case TIMER_TYPE_UPCOMING_ALTERNATE:
+    case TIMER_TYPE_UPCOMING_RECORDED:
+    case TIMER_TYPE_UPCOMING_EXPIRED:
     case TIMER_TYPE_OVERRIDE:            // Override
     case TIMER_TYPE_DONT_RECORD:         // Don't record
     case TIMER_TYPE_UPCOMING_MANUAL:     // Upcoming manual
