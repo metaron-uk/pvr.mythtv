@@ -264,6 +264,57 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefaultId())));
 
+    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_UPCOMING_ALTERNATE,
+            PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+            PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
+            PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
+            XBMC->GetLocalizedString(30457), // Alternative
+            GetRulePriorityList(),
+            GetRulePriorityDefaultId(),
+            emptyList,
+            0, // n&v
+            autoExpireList,
+            autoExpire1,
+            GetRuleRecordingGroupList(),
+            GetRuleRecordingGroupDefaultId())));
+
+    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_UPCOMING_RECORDED,
+            PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+            PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
+            PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
+            XBMC->GetLocalizedString(30458), // Currently recorded
+            GetRulePriorityList(),
+            GetRulePriorityDefaultId(),
+            emptyList,
+            0, // n&v
+            autoExpireList,
+            autoExpire1,
+            GetRuleRecordingGroupList(),
+            GetRuleRecordingGroupDefaultId())));
+
+    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_UPCOMING_EXPIRED,
+            PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+            PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
+            PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
+            XBMC->GetLocalizedString(30459), // Expired recording
+            GetRulePriorityList(),
+            GetRulePriorityDefaultId(),
+            emptyList,
+            0, // n&v
+            autoExpireList,
+            autoExpire1,
+            GetRuleRecordingGroupList(),
+            GetRuleRecordingGroupDefaultId())));
+
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_OVERRIDE,
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
@@ -645,7 +696,24 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
         if (node->GetMainRule().SearchType() == Myth::ST_ManualSearch)
           entry.timerType = TIMER_TYPE_UPCOMING_MANUAL;
         else
-          entry.timerType = TIMER_TYPE_UPCOMING;
+        {
+          switch (recording.Status())
+          {
+            case Myth::RS_EARLIER_RECORDING:  //will record earlier
+            case Myth::RS_LATER_SHOWING:      //will record later
+              entry.timerType = TIMER_TYPE_UPCOMING_ALTERNATE;
+              break;
+            case Myth::RS_CURRENT_RECORDING:  //Already in the current library
+              entry.timerType = TIMER_TYPE_UPCOMING_RECORDED;
+              break;
+            case Myth::RS_PREVIOUS_RECORDING: //Previoulsy recorded but no longer in the library
+              entry.timerType = TIMER_TYPE_UPCOMING_EXPIRED;
+              break;
+            default:
+              entry.timerType = TIMER_TYPE_UPCOMING;
+              break;
+          }
+        }
     }
     entry.startOffset = rule.StartOffset();
     entry.endOffset = rule.EndOffset();
@@ -658,6 +726,9 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   switch (entry.timerType)
   {
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_UPCOMING_ALTERNATE:
+    case TIMER_TYPE_UPCOMING_RECORDED:
+    case TIMER_TYPE_UPCOMING_EXPIRED:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING_MANUAL:
       entry.epgCheck = true;
@@ -837,6 +908,9 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_UPCOMING_ALTERNATE:
+    case TIMER_TYPE_UPCOMING_RECORDED:
+    case TIMER_TYPE_UPCOMING_EXPIRED:
     case TIMER_TYPE_UPCOMING_MANUAL:
     case TIMER_TYPE_ZOMBIE:
       //Not a 'rule' type
@@ -1121,6 +1195,9 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
       rule.SetDescription(entry.description);
       return rule;
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_UPCOMING_ALTERNATE:
+    case TIMER_TYPE_UPCOMING_RECORDED:
+    case TIMER_TYPE_UPCOMING_EXPIRED:
     case TIMER_TYPE_UPCOMING_MANUAL:
     case TIMER_TYPE_ZOMBIE:
       rule.SetType(Myth::RT_SingleRecord);
