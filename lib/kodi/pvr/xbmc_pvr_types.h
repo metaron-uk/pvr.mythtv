@@ -77,10 +77,10 @@ struct DemuxPacket;
 #define PVR_STREAM_MAX_STREAMS 20
 
 /* current PVR API version */
-#define XBMC_PVR_API_VERSION "5.0.0"
+#define XBMC_PVR_API_VERSION "5.1.0"
 
 /* min. PVR API version */
-#define XBMC_PVR_MIN_API_VERSION "5.0.0"
+#define XBMC_PVR_MIN_API_VERSION "5.1.0"
 
 #ifdef __cplusplus
 extern "C" {
@@ -231,12 +231,23 @@ extern "C" {
   } PVR_CONNECTION_STATE;
 
   /*!
+   * @brief PVR recording channel types
+   */
+  typedef enum
+  {
+    PVR_RECORDING_CHANNEL_TYPE_UNKNOWN = 0, /*!< @brief unknown */
+    PVR_RECORDING_CHANNEL_TYPE_TV      = 1, /*!< @brief TV channel */
+    PVR_RECORDING_CHANNEL_TYPE_RADIO   = 2, /*!< @brief radio channel */
+  } PVR_RECORDING_CHANNEL_TYPE;
+
+  /*!
    * @brief Properties passed to the Create() method of an add-on.
    */
   typedef struct PVR_PROPERTIES
   {
     const char* strUserPath;           /*!< @brief path to the user profile */
     const char* strClientPath;         /*!< @brief path to this add-on */
+    int iEpgMaxDays;                   /*!< @brief if > EPG_TIMEFRAME_UNLIMITED, in async epg mode, deliver only events in the range from 'end time > now' to 'start time < now + iEpgMaxDays. EPG_TIMEFRAME_UNLIMITED, notify all events. */
   } PVR_PROPERTIES;
 
   /*!
@@ -269,11 +280,11 @@ extern "C" {
     unsigned int iStreamCount;
     struct PVR_STREAM
     {
-      unsigned int      iPhysicalId;        /*!< @brief (required) physical index */
+      unsigned int      iPID;               /*!< @brief (required) PID */
       xbmc_codec_type_t iCodecType;         /*!< @brief (required) codec type this stream */
       xbmc_codec_id_t   iCodecId;           /*!< @brief (required) codec id of this stream */
       char              strLanguage[4];     /*!< @brief (required) language id */
-      int               iIdentifier;        /*!< @brief (required) stream id */
+      int               iSubtitleInfo;      /*!< @brief (required) Subtitle Info */
       int               iFPSScale;          /*!< @brief (required) scale of 1000 and a rate of 29970 will result in 29.97 fps */
       int               iFPSRate;           /*!< @brief (required) FPS rate */
       int               iHeight;            /*!< @brief (required) height of the stream reported by the demuxer */
@@ -479,6 +490,7 @@ extern "C" {
     bool   bIsDeleted;                                    /*!< @brief (optional) shows this recording is deleted and can be undelete */
     unsigned int iEpgEventId;                             /*!< @brief (optional) EPG event id associated with this recording. Valid ids must be greater than EPG_TAG_INVALID_UID. */
     int    iChannelUid;                                   /*!< @brief (optional) unique identifier of the channel for this recording. PVR_CHANNEL_INVALID_UID denotes that channel uid is not available. */
+    PVR_RECORDING_CHANNEL_TYPE channelType;               /*!< @brief (optional) channel type. Set to PVR_RECORDING_CHANNEL_TYPE_UNKNOWN if the type cannot be determined. */
   } ATTRIBUTE_PACKED PVR_RECORDING;
 
   /*!

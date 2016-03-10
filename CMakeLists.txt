@@ -23,7 +23,7 @@ enable_language(C)
 include_directories(${CMAKE_BINARY_DIR}/include
                     ${PROJECT_SOURCE_DIR}/lib/cppmyth/src)
 
-add_definitions(-DUSE_DEMUX -D__STDC_FORMAT_MACROS)
+add_definitions(-DUSE_DEMUX -D__STDC_FORMAT_MACROS -DBUILD_KODI_ADDON)
 
 if(NOT WIN32)
   add_definitions("-fPIC -Wall")

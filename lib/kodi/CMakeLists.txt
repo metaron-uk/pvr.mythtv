@@ -26,7 +26,7 @@ configure_file(pvr/xbmc_pvr_dll.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_pvr_dll.
 configure_file(pvr/xbmc_pvr_types.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_pvr_types.h COPYONLY)
 configure_file(pvr/xbmc_scr_dll.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_scr_dll.h COPYONLY)
 configure_file(pvr/xbmc_scr_types.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_scr_types.h COPYONLY)
-configure_file(pvr/xbmc_stream_utils.hpp ${CMAKE_BINARY_DIR}/include/kodi/xbmc_stream_utils.hpp COPYONLY)
 configure_file(pvr/xbmc_vis_dll.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_vis_dll.h COPYONLY)
 configure_file(pvr/xbmc_vis_types.h ${CMAKE_BINARY_DIR}/include/kodi/xbmc_vis_types.h COPYONLY)
+configure_file(pvr/IFileTypes.h ${CMAKE_BINARY_DIR}/include/kodi/IFileTypes.h COPYONLY)
 
