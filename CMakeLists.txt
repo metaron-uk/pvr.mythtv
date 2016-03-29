@@ -26,7 +26,8 @@ include_directories(${CMAKE_BINARY_DIR}/include
 add_definitions(-DUSE_DEMUX -D__STDC_FORMAT_MACROS -DBUILD_KODI_ADDON)
 
 if(NOT WIN32)
-  add_definitions("-fPIC -Wall")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall -std=c++11")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC -Wall")
 else()
   add_definitions(-DTARGET_WINDOWS -D_WINSOCKAPI_
     -D_USE_32BIT_TIME_T -D_CRT_SECURE_NO_WARNINGS
