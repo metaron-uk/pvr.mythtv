@@ -21,6 +21,7 @@ enable_language(CXX)
 enable_language(C)
 
 include_directories(${CMAKE_BINARY_DIR}/include
+                    ${CMAKE_BINARY_DIR}/include/kodi
                     ${PROJECT_SOURCE_DIR}/lib/cppmyth/src)
 
 add_definitions(-DUSE_DEMUX -D__STDC_FORMAT_MACROS -DBUILD_KODI_ADDON)
