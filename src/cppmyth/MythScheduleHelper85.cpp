@@ -91,6 +91,9 @@ bool MythScheduleHelper85::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
             case Myth::RS_PREVIOUS_RECORDING: //Previoulsy recorded but no longer in the library
               entry.timerType = TIMER_TYPE_UPCOMING_EXPIRED;
               break;
+            case Myth::RS_INACTIVE:           //Parent rule is disabled
+              entry.timerType = TIMER_TYPE_RULE_INACTIVE;
+              break;
             default:
               entry.timerType = TIMER_TYPE_UPCOMING;
               break;
@@ -108,6 +111,7 @@ bool MythScheduleHelper85::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   switch (entry.timerType)
   {
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:

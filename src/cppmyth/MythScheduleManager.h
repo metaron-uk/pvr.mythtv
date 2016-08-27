@@ -45,6 +45,7 @@ typedef enum
   TIMER_TYPE_SEARCH_PEOPLE,       // Search people
   // Keep last
   TIMER_TYPE_UPCOMING,            // Upcoming
+  TIMER_TYPE_RULE_INACTIVE,       // Parent Rule is disable
   TIMER_TYPE_UPCOMING_ALTERNATE,  // Upcoming will record at another time
   TIMER_TYPE_UPCOMING_RECORDED,   // Upcoming currently recorded
   TIMER_TYPE_UPCOMING_EXPIRED,    // Upcoming previously recorded and expired

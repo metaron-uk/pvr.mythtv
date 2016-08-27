@@ -271,6 +271,7 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:
@@ -589,6 +590,7 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
       rule.SetDescription(entry.description);
       return rule;
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:

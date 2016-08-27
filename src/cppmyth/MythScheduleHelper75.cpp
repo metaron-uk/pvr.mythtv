@@ -247,6 +247,23 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
             GetRuleRecordingGroupList(),
             GetRuleRecordingGroupDefaultId())));
 
+    m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_RULE_INACTIVE,
+            PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
+            PVR_TIMER_TYPE_SUPPORTS_START_END_MARGIN |
+            PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
+            PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
+            PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
+            XBMC->GetLocalizedString(30469), // Rule Disabled
+            GetRulePriorityList(),
+            GetRulePriorityDefaultId(),
+            emptyList,
+            0, // n&v
+            autoExpireList,
+            autoExpire1,
+            GetRuleRecordingGroupList(),
+            GetRuleRecordingGroupDefaultId())));
+
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_UPCOMING,
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
@@ -707,6 +724,9 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
             case Myth::RS_PREVIOUS_RECORDING: //Previoulsy recorded but no longer in the library
               entry.timerType = TIMER_TYPE_UPCOMING_EXPIRED;
               break;
+            case Myth::RS_INACTIVE:
+              entry.timerType = TIMER_TYPE_RULE_INACTIVE;
+              break;
             default:
               entry.timerType = TIMER_TYPE_UPCOMING;
               break;
@@ -724,6 +744,7 @@ bool MythScheduleHelper75::FillTimerEntryWithUpcoming(MythTimerEntry& entry, con
   switch (entry.timerType)
   {
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:
@@ -906,6 +927,7 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
     case TIMER_TYPE_DONT_RECORD:
     case TIMER_TYPE_OVERRIDE:
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:
@@ -1193,6 +1215,7 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
       rule.SetDescription(entry.description);
       return rule;
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:

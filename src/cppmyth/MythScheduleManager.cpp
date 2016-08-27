@@ -259,6 +259,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
   switch (entry.timerType)
   {
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:
@@ -292,6 +293,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DeleteTimer(const MythTimerE
   switch (entry.timerType)
   {
     case TIMER_TYPE_UPCOMING:
+    case TIMER_TYPE_RULE_INACTIVE:
     case TIMER_TYPE_UPCOMING_ALTERNATE:
     case TIMER_TYPE_UPCOMING_RECORDED:
     case TIMER_TYPE_UPCOMING_EXPIRED:

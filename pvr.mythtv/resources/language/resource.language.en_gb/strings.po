@@ -393,7 +393,11 @@ msgctxt "#30468"
 msgid "Search people"
 msgstr ""
 
-# empty strings from id 30469 to 30500
+msgctxt "#30469"
+msgid "Rule disabled"
+msgstr ""
+
+# empty strings from id 30470 to 30500
 
 msgctxt "#30501"
 msgid "Don't match duplicates"
