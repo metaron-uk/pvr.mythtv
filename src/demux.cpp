@@ -278,7 +278,7 @@ DemuxPacket* Demux::Read()
   return PVR->AllocateDemuxPacket(0);
 }
 
-bool Demux::SeekTime(int time, bool backwards, double* startpts)
+bool Demux::SeekTime(double time, bool backwards, double* startpts)
 {
   // Current PTS must be valid to estimate offset
   if (m_PTS == PTS_UNSET)
