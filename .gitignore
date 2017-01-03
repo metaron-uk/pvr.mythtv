@@ -1,5 +1,5 @@
 # build artifacts
-build/
+build*/
 debian/changelog
 debian/files
 debian/kodi-pvr-mythtv-dbg.debhelper.log
