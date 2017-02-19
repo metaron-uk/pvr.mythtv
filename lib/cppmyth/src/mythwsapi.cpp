@@ -2430,7 +2430,8 @@ WSStreamPtr WSAPI::GetPreviewImage1_32(uint32_t chanid, time_t recstartts, unsig
   }
   if (!resp->IsSuccessful())
   {
-    DBG(DBG_ERROR, "%s: invalid response\n", __FUNCTION__);
+    time_to_iso8601utc(recstartts, buf);
+    DBG(DBG_ERROR, "%s: invalid response requesting chanid %i recstart %s\n", __FUNCTION__, chanid, buf);
     delete resp;
     return ret;
   }
