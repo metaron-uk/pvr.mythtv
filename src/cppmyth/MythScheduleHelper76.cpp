@@ -617,11 +617,11 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
 bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
 {
   bool ruleIsOK = true;
-  if (rule.StartTime() == rule.EndTime())
+  if (rule.StartTime() >= rule.EndTime())
   {
-    rule.SetEndTime(rule.EndTime() + 2);
-    XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has zero duration which the backend would reject. End time increased by 2 seconds.",
-              __FUNCTION__, rule.Title().c_str(), rule.RecordID());
+    rule.SetEndTime(rule.StartTime() + 2);
+    XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has zero or negative duration which backend would reject. End (%d) now Start (%d) + 2.",
+              __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.EndTime(), rule.StartTime());
   }
   switch (rule.SearchType())
   {
