@@ -650,9 +650,10 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
   }
   if (rule.ChannelID() == 0 || rule.Callsign() == "")
   {
-     XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has no associated channel, which the backend will reject.",
-               __FUNCTION__, rule.Title().c_str(), rule.RecordID());
-     ruleIsOK = false;
+     rule.SetChannelID(100);
+     rule.SetCallsign("Dummy");
+     XBMC->Log(LOG_INFO, "%s: Rule %s (%u) had no associated channel or callsign, which the backend would reject. Set to %d %s",
+               __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.ChannelID(), rule.Callsign().c_str());
   }
   return ruleIsOK;
 }
