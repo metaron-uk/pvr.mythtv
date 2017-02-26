@@ -242,6 +242,7 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
             PVR_TIMER_TYPE_IS_REPEATING |
             PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
+            PVR_TIMER_TYPE_SUPPORTS_RECORD_ONLY_NEW_EPISODES |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
             PVR_TIMER_TYPE_SUPPORTS_RECORDING_GROUP,
@@ -1204,6 +1205,10 @@ MythRecordingRule MythScheduleHelper75::RuleFromMythTimer(const MythTimerEntry& 
       }
       break;
     }
+
+    case TIMER_TYPE_UNHANDLED:
+      XBMC->Log(LOG_DEBUG, "75::%s: Unhandled rule: %u passed", __FUNCTION__, rule.RecordID());
+      return rule;
 
     case TIMER_TYPE_DONT_RECORD:
       rule.SetType(Myth::RT_DontRecord);
