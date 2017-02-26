@@ -312,6 +312,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::DeleteTimer(const MythTimerE
     case TIMER_TYPE_RECORD_SERIES:
     case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
+    case TIMER_TYPE_UNHANDLED:
       return DeleteRecordingRule(entry.entryIndex);
     default:
       break;
