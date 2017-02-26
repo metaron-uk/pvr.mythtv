@@ -240,6 +240,7 @@ MythTimerTypeList MythScheduleHelper75::GetTimerTypes() const
     ///////////////////////////////////////////////////////////////////////////
     m_timerTypeList.push_back(MythTimerTypePtr(new MythTimerType(TIMER_TYPE_UNHANDLED,
             PVR_TIMER_TYPE_IS_REPEATING |
+            PVR_TIMER_TYPE_SUPPORTS_ENABLE_DISABLE |
             PVR_TIMER_TYPE_FORBIDS_NEW_INSTANCES |
             PVR_TIMER_TYPE_SUPPORTS_PRIORITY |
             PVR_TIMER_TYPE_SUPPORTS_LIFETIME |
