@@ -627,9 +627,9 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
   switch (rule.SearchType())
   {
     case Myth::ST_PowerSearch:
-      if (rule.Subtitle().empty())
+      if (rule.Subtitle().empty() && rule.Description().empty())
       {
-        XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has search type PowerSearch with no Subtitle. It will probably do nothing.",
+        XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has search type PowerSearch with no Subtitle or Description. It will probably do nothing.",
                   __FUNCTION__, rule.Title().c_str(), rule.RecordID());
         ruleIsOK = false;
       }
