@@ -278,6 +278,7 @@ MythScheduleManager::MSM_ERROR MythScheduleManager::UpdateTimer(const MythTimerE
     case TIMER_TYPE_RECORD_SERIES:
     case TIMER_TYPE_SEARCH_TEXT:
     case TIMER_TYPE_SEARCH_PEOPLE:
+    case TIMER_TYPE_UNHANDLED:
     {
       MythRecordingRule newrule = m_versionHelper->RuleFromMythTimer(entry);
       return UpdateRecordingRule(entry.entryIndex, newrule);
