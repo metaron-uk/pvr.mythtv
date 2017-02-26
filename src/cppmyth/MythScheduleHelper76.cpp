@@ -624,7 +624,7 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
   if (rule.StartTime() >= rule.EndTime())
   {
     rule.SetEndTime(rule.StartTime() + 2);
-    XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has zero or negative duration which backend would reject. End (%d) now Start (%d) + 2.",
+    XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has zero or negative duration which backend would reject. End (%d) now Start (%d) + 2.",
               __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.EndTime(), rule.StartTime());
   }
   switch (rule.SearchType())
@@ -632,7 +632,7 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
     case Myth::ST_PowerSearch:
       if (rule.Subtitle().empty())
       {
-        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type PowerSearch with no Subtitle. It will probably do nothing.",
+        XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has search type PowerSearch with no Subtitle. It will probably do nothing.",
                   __FUNCTION__, rule.Title().c_str(), rule.RecordID());
         ruleIsOK = false;
       }
@@ -641,13 +641,13 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
     case Myth::ST_PeopleSearch:
       if (rule.Description().empty())
       {
-        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type %u and no Description. It may severly degrade backend performance.",
+        XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has search type %u and no Description. It may severly degrade backend performance.",
                   __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.SearchType());
         ruleIsOK = false;
       }
       else if (rule.Description().length() <= 3)
       {
-        XBMC->Log(LOG_INFO, "%s: Rule %s (%u) has search type %u and a very short Description. It may degrade backend performance.",
+        XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) has search type %u and a very short Description. It may degrade backend performance.",
                   __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.SearchType());
         ruleIsOK = false;
       }
@@ -659,7 +659,7 @@ bool MythScheduleHelper76::FixRule(MythRecordingRule& rule) const
   {
      rule.SetChannelID(100);
      rule.SetCallsign("Dummy");
-     XBMC->Log(LOG_INFO, "%s: Rule %s (%u) had no associated channel or callsign, which the backend would reject. Set to %d %s",
+     XBMC->Log(LOG_INFO, "76::%s: Rule %s (%u) had no associated channel or callsign, which the backend would reject. Set to %d %s",
                __FUNCTION__, rule.Title().c_str(), rule.RecordID(), rule.ChannelID(), rule.Callsign().c_str());
   }
   return ruleIsOK;
