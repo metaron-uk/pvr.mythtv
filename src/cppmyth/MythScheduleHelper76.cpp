@@ -571,6 +571,10 @@ MythRecordingRule MythScheduleHelper76::RuleFromMythTimer(const MythTimerEntry& 
       break;
     }
 
+    case TIMER_TYPE_UNHANDLED:
+      XBMC->Log(LOG_DEBUG, "76::%s: Unhandled rule: %u passed", __FUNCTION__, rule.RecordID());
+      return rule;
+
     case TIMER_TYPE_DONT_RECORD:
       rule.SetType(Myth::RT_DontRecord);
       rule.SetChannelID(entry.chanid);
