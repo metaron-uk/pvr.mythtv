@@ -646,7 +646,6 @@ PVR_CHANNEL PVRClientMythTV::GetFirstChannel()
         PVR_STRCPY(tag.strIconPath, "");
 
       // Unimplemented
-      PVR_STRCPY(tag.strStreamURL, "");
       PVR_STRCPY(tag.strInputFormat, "");
       tag.iEncryptionSystem = 0;
     }
