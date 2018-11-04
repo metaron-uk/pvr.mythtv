@@ -29,5 +29,5 @@ public:
   MythScheduleHelper91(MythScheduleManager *manager, Myth::Control *control)
   : MythScheduleHelper85(manager, control) { }
 
-  virtual MythRecordingRule NewFromTimer(const MythTimerEntry& entry, bool withTemplate);
+//MythRecordingRule MythScheduleHelper91::RuleFromMythTimer is not needed as the metaron 76 function version works for 91 as well
 };
