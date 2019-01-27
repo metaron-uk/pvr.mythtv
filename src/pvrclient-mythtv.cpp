@@ -640,8 +640,8 @@ PVR_CHANNEL PVRClientMythTV::GetFirstChannel()
       tag.bIsHidden = !itm->second.Visible();
       tag.bIsRadio = itm->second.IsRadio();
 
-      if (m_fileOps)
-        PVR_STRCPY(tag.strIconPath, m_fileOps->GetChannelIconPath(itm->second).c_str());
+      if (m_artworksManager)
+        PVR_STRCPY(tag.strIconPath, m_artworksManager->GetChannelIconPath(itm->second).c_str());
       else
         PVR_STRCPY(tag.strIconPath, "");
 
