@@ -2458,6 +2458,9 @@ long long PVRClientMythTV::LengthRecordedStream()
   return retval;
 }
 
+#define LABELSTART "[COLOR yellow]"
+#define LABELCLOSE "[/COLOR]"
+
 PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_MENUHOOK_DATA &item)
 {
   if (!m_control)
@@ -2518,56 +2521,62 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     const unsigned sz = 12;
     std::string items[sz];
     const char* entries[sz];
-    items[0] = Myth::RecStatusToString(m_control->CheckService(), pinfo.Status());
-    items[1] = "ID " + Myth::IdToString(pinfo.RecordID());
-    items[2] = Myth::TimeToString(pinfo.RecordingStartTime());
-    items[3] = Myth::TimeToString(pinfo.RecordingEndTime());
-    items[4] = pinfo.ChannelName();
-    items[5] = pinfo.FileName();
-    items[6] = pinfo.StorageGroup();
-    items[7] = pinfo.HostName();
+    items[0].append("Status : " LABELSTART).append(Myth::RecStatusToString(m_control->CheckService(), pinfo.Status())).append(LABELCLOSE);
+    items[1].append("RecordID : " LABELSTART).append(Myth::IdToString(pinfo.RecordID())).append(LABELCLOSE);
+    items[2].append("StartTime : " LABELSTART).append(Myth::TimeToString(pinfo.RecordingStartTime())).append(LABELCLOSE);
+    items[3].append("EndTime : " LABELSTART).append(Myth::TimeToString(pinfo.RecordingEndTime())).append(LABELCLOSE);
+    items[4].append("ChannelName : " LABELSTART).append(pinfo.ChannelName()).append(LABELCLOSE);
+    items[5].append("FileName : " LABELSTART).append(pinfo.FileName()).append(LABELCLOSE);
+    items[6].append("StorageGroup : " LABELSTART).append(pinfo.StorageGroup()).append(LABELCLOSE);
+    items[7].append("HostName : " LABELSTART).append(pinfo.HostName()).append(LABELCLOSE);
 
-    items[8].append("FLAGS [ ");
+    items[8].append("ProgramFlags : " LABELSTART);
     unsigned pf = pinfo.GetPtr()->programFlags;
-    items[8].append((pf & 0x00001) ? "0 " : "_ ");
-    items[8].append((pf & 0x00002) ? "1 " : "_ ");
-    items[8].append((pf & 0x00004) ? "2 " : "_ ");
-    items[8].append((pf & 0x00008) ? "3 " : "_ ");
-    items[8].append((pf & 0x00010) ? "4 " : "_ ");
-    items[8].append((pf & 0x00020) ? "5 " : "_ ");
-    items[8].append((pf & 0x00040) ? "6 " : "_ ");
-    items[8].append((pf & 0x00080) ? "7 " : "_ ");
-    items[8].append((pf & 0x00100) ? "8 " : "_ ");
-    items[8].append((pf & 0x00200) ? "9 " : "_ ");
-    items[8].append((pf & 0x00400) ? "A " : "_ ");
-    items[8].append((pf & 0x00800) ? "B " : "_ ");
-    items[8].append((pf & 0x01000) ? "C " : "_ ");
-    items[8].append((pf & 0x02000) ? "D " : "_ ");
-    items[8].append((pf & 0x04000) ? "E " : "_ ");
-    items[8].append((pf & 0x08000) ? "F " : "_ ");
-    items[8].append((pf & 0x10000) ? "G " : "_ ");
-    items[8].append((pf & 0x20000) ? "H ]" : "_ ]");
+    items[8].append((pf & 0x00001) ? "0 " : "");
+    items[8].append((pf & 0x00002) ? "1 " : "");
+    items[8].append((pf & 0x00004) ? "2 " : "");
+    items[8].append((pf & 0x00008) ? "3 " : "");
+    items[8].append((pf & 0x00010) ? "4 " : "");
+    items[8].append((pf & 0x00020) ? "5 " : "");
+    items[8].append((pf & 0x00040) ? "6 " : "");
+    items[8].append((pf & 0x00080) ? "7 " : "");
+    items[8].append((pf & 0x00100) ? "8 " : "");
+    items[8].append((pf & 0x00200) ? "9 " : "");
+    items[8].append((pf & 0x00400) ? "A " : "");
+    items[8].append((pf & 0x00800) ? "B " : "");
+    items[8].append((pf & 0x01000) ? "C " : "");
+    items[8].append((pf & 0x02000) ? "D " : "");
+    items[8].append((pf & 0x04000) ? "E " : "");
+    items[8].append((pf & 0x08000) ? "F " : "");
+    items[8].append((pf & 0x10000) ? "G " : "");
+    items[8].append((pf & 0x20000) ? "H " : "");
+    items[8].append(LABELCLOSE);
 
-    items[9].append("AUDIO [ ");
+    items[9].append("AudioProps : " LABELSTART);
     unsigned ap = pinfo.GetPtr()->audioProps;
-    items[9].append((ap & 0x01) ? "0 " : "_ ");
-    items[9].append((ap & 0x02) ? "1 " : "_ ");
-    items[9].append((ap & 0x04) ? "2 " : "_ ");
-    items[9].append((ap & 0x08) ? "3 " : "_ ");
-    items[9].append((ap & 0x10) ? "4 " : "_ ");
-    items[9].append((ap & 0x20) ? "5 ]" : "_ ]");
+    items[9].append((ap & 0x01) ? "0 " : "");
+    items[9].append((ap & 0x02) ? "1 " : "");
+    items[9].append((ap & 0x04) ? "2 " : "");
+    items[9].append((ap & 0x08) ? "3 " : "");
+    items[9].append((ap & 0x10) ? "4 " : "");
+    items[9].append((ap & 0x20) ? "5 " : "");
+    items[9].append(LABELCLOSE);
 
-    items[10].append("VIDEO [ ");
+    items[10].append("VideoProps : " LABELSTART);
     unsigned vp = pinfo.GetPtr()->videoProps;
-    items[10].append((vp & 0x01) ? "0 " : "_ ");
-    items[10].append((vp & 0x02) ? "1 " : "_ ");
-    items[10].append((vp & 0x04) ? "2 " : "_ ");
-    items[10].append((vp & 0x08) ? "3 " : "_ ");
-    items[10].append((vp & 0x10) ? "4 " : "_ ");
-    items[10].append((vp & 0x20) ? "5 " : "_ ");
-    items[10].append((vp & 0x40) ? "6 ]" : "_ ]");
+    items[10].append((vp & 0x01) ? "0 " : "");
+    items[10].append((vp & 0x02) ? "1 " : "");
+    items[10].append((vp & 0x04) ? "2 " : "");
+    items[10].append((vp & 0x08) ? "3 " : "");
+    items[10].append((vp & 0x10) ? "4 " : "");
+    items[10].append((vp & 0x20) ? "5 " : "");
+    items[10].append((vp & 0x40) ? "6 " : "");
+    items[10].append(LABELCLOSE);
 
-    items[11] = (pinfo.GetPropsVideoFrameRate() > 0.0 ? std::to_string(pinfo.GetPropsVideoFrameRate()) : "");
+    items[11].append("FrameRate : " LABELSTART);
+    if (pinfo.GetPropsVideoFrameRate() > 0.0)
+      items[11].append(std::to_string(pinfo.GetPropsVideoFrameRate()));
+    items[11].append(LABELCLOSE);
 
     for (unsigned i = 0; i < sz; ++i)
       entries[i] = items[i].c_str();
@@ -2592,10 +2601,10 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
         const unsigned sz = 4;
         std::string items[sz];
         const char* entries[sz];
-        items[0] = Myth::RecStatusToString(m_control->CheckService(), prog->Status());
-        items[1] = "ID " + Myth::IdToString(prog->RecordID());
-        items[2] = Myth::TimeToString(prog->RecordingStartTime());
-        items[3] = Myth::TimeToString(prog->RecordingEndTime());
+        items[0].append("Status : " LABELSTART).append(Myth::RecStatusToString(m_control->CheckService(), prog->Status())).append(LABELCLOSE);
+        items[1].append("RecordID : " LABELSTART).append(Myth::IdToString(prog->RecordID())).append(LABELCLOSE);
+        items[2].append("StartTime : " LABELSTART).append(Myth::TimeToString(prog->RecordingStartTime())).append(LABELCLOSE);
+        items[3].append("EndTime : " LABELSTART).append(Myth::TimeToString(prog->RecordingEndTime())).append(LABELCLOSE);
         for (unsigned i = 0; i < sz; ++i)
           entries[i] = items[i].c_str();
         GUI->Dialog_Select(item.data.timer.strTitle, entries, sz);
