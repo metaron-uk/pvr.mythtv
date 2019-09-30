@@ -1,3 +1,6 @@
+v5.10.11
+- Show label of recording info hook
+
 v5.10.10
 - Sync upstream cppmyth (2.12.7)
 
