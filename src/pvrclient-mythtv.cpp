@@ -2458,9 +2458,6 @@ long long PVRClientMythTV::LengthRecordedStream()
   return retval;
 }
 
-#define LABELSTART "[COLOR yellow]"
-#define LABELCLOSE "[/COLOR]"
-
 PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_MENUHOOK_DATA &item)
 {
   if (!m_control)
@@ -2521,16 +2518,24 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     const unsigned sz = 12;
     std::string items[sz];
     const char* entries[sz];
-    items[0].append("Status : " LABELSTART).append(Myth::RecStatusToString(m_control->CheckService(), pinfo.Status())).append(LABELCLOSE);
-    items[1].append("RecordID : " LABELSTART).append(Myth::IdToString(pinfo.RecordID())).append(LABELCLOSE);
-    items[2].append("StartTime : " LABELSTART).append(Myth::TimeToString(pinfo.RecordingStartTime())).append(LABELCLOSE);
-    items[3].append("EndTime : " LABELSTART).append(Myth::TimeToString(pinfo.RecordingEndTime())).append(LABELCLOSE);
-    items[4].append("ChannelName : " LABELSTART).append(pinfo.ChannelName()).append(LABELCLOSE);
-    items[5].append("FileName : " LABELSTART).append(pinfo.FileName()).append(LABELCLOSE);
-    items[6].append("StorageGroup : " LABELSTART).append(pinfo.StorageGroup()).append(LABELCLOSE);
-    items[7].append("HostName : " LABELSTART).append(pinfo.HostName()).append(LABELCLOSE);
+    items[0].append("Status : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(Myth::RecStatusToString(m_control->CheckService(), pinfo.Status())).append("[/COLOR]");
+    items[1].append("RecordID : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(Myth::IdToString(pinfo.RecordID())).append("[/COLOR]");
+    items[2].append("StartTime : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(Myth::TimeToString(pinfo.RecordingStartTime())).append("[/COLOR]");
+    items[3].append("EndTime : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(Myth::TimeToString(pinfo.RecordingEndTime())).append("[/COLOR]");
+    items[4].append("ChannelName : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(pinfo.ChannelName()).append("[/COLOR]");
+    items[5].append("FileName : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(pinfo.FileName()).append("[/COLOR]");
+    items[6].append("StorageGroup : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(pinfo.StorageGroup()).append("[/COLOR]");
+    items[7].append("HostName : [COLOR ").append(g_szDamagedColor).append("]")
+            .append(pinfo.HostName()).append("[/COLOR]");
 
-    items[8].append("ProgramFlags : " LABELSTART);
+    items[8].append("ProgramFlags : [COLOR ").append(g_szDamagedColor).append("]");
     unsigned pf = pinfo.GetPtr()->programFlags;
     items[8].append((pf & 0x00001) ? "0 " : "");
     items[8].append((pf & 0x00002) ? "1 " : "");
@@ -2550,9 +2555,9 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     items[8].append((pf & 0x08000) ? "F " : "");
     items[8].append((pf & 0x10000) ? "G " : "");
     items[8].append((pf & 0x20000) ? "H " : "");
-    items[8].append(LABELCLOSE);
+    items[8].append("[/COLOR]");
 
-    items[9].append("AudioProps : " LABELSTART);
+    items[9].append("AudioProps : [COLOR ").append(g_szDamagedColor).append("]");
     unsigned ap = pinfo.GetPtr()->audioProps;
     items[9].append((ap & 0x01) ? "0 " : "");
     items[9].append((ap & 0x02) ? "1 " : "");
@@ -2560,9 +2565,9 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     items[9].append((ap & 0x08) ? "3 " : "");
     items[9].append((ap & 0x10) ? "4 " : "");
     items[9].append((ap & 0x20) ? "5 " : "");
-    items[9].append(LABELCLOSE);
+    items[9].append("[/COLOR]");
 
-    items[10].append("VideoProps : " LABELSTART);
+    items[10].append("VideoProps : [COLOR ").append(g_szDamagedColor).append("]");
     unsigned vp = pinfo.GetPtr()->videoProps;
     items[10].append((vp & 0x01) ? "0 " : "");
     items[10].append((vp & 0x02) ? "1 " : "");
@@ -2571,12 +2576,12 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
     items[10].append((vp & 0x10) ? "4 " : "");
     items[10].append((vp & 0x20) ? "5 " : "");
     items[10].append((vp & 0x40) ? "6 " : "");
-    items[10].append(LABELCLOSE);
+    items[10].append("[/COLOR]");
 
-    items[11].append("FrameRate : " LABELSTART);
+    items[11].append("FrameRate : [COLOR ").append(g_szDamagedColor).append("]");
     if (pinfo.GetPropsVideoFrameRate() > 0.0)
       items[11].append(std::to_string(pinfo.GetPropsVideoFrameRate()));
-    items[11].append(LABELCLOSE);
+    items[11].append("[/COLOR]");
 
     for (unsigned i = 0; i < sz; ++i)
       entries[i] = items[i].c_str();
@@ -2601,10 +2606,14 @@ PVR_ERROR PVRClientMythTV::CallMenuHook(const PVR_MENUHOOK &menuhook, const PVR_
         const unsigned sz = 4;
         std::string items[sz];
         const char* entries[sz];
-        items[0].append("Status : " LABELSTART).append(Myth::RecStatusToString(m_control->CheckService(), prog->Status())).append(LABELCLOSE);
-        items[1].append("RecordID : " LABELSTART).append(Myth::IdToString(prog->RecordID())).append(LABELCLOSE);
-        items[2].append("StartTime : " LABELSTART).append(Myth::TimeToString(prog->RecordingStartTime())).append(LABELCLOSE);
-        items[3].append("EndTime : " LABELSTART).append(Myth::TimeToString(prog->RecordingEndTime())).append(LABELCLOSE);
+        items[0].append("Status : [COLOR ").append(g_szDamagedColor).append("]")
+                .append(Myth::RecStatusToString(m_control->CheckService(), prog->Status())).append("[/COLOR]");
+        items[1].append("RecordID : [COLOR ").append(g_szDamagedColor).append("]")
+                .append(Myth::IdToString(prog->RecordID())).append("[/COLOR]");
+        items[2].append("StartTime : [COLOR ").append(g_szDamagedColor).append("]")
+                .append(Myth::TimeToString(prog->RecordingStartTime())).append("[/COLOR]");
+        items[3].append("EndTime : [COLOR ").append(g_szDamagedColor).append("]")
+                .append(Myth::TimeToString(prog->RecordingEndTime())).append("[/COLOR]");
         for (unsigned i = 0; i < sz; ++i)
           entries[i] = items[i].c_str();
         GUI->Dialog_Select(item.data.timer.strTitle, entries, sz);
