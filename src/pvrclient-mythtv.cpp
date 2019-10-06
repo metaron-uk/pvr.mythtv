@@ -1294,6 +1294,8 @@ PVR_ERROR PVRClientMythTV::SetRecordingPlayCount(const PVR_RECORDING &recording,
   }
 }
 
+PVRClientMythTV::cachedBookmark_t PVRClientMythTV::_cachedBookmark = { 0, 0, 0 };
+
 PVR_ERROR PVRClientMythTV::SetRecordingLastPlayedPosition(const PVR_RECORDING &recording, int lastplayedposition)
 {
   if (g_bExtraDebug)
@@ -1311,6 +1313,7 @@ PVR_ERROR PVRClientMythTV::SetRecordingLastPlayedPosition(const PVR_RECORDING &r
       // Write the bookmark
       if (m_control->SetSavedBookmark(*prog, 2, duration))
       {
+        _cachedBookmark = { recording.iChannelUid, recording.recordingTime, lastplayedposition };
         if (g_bExtraDebug)
           XBMC->Log(LOG_DEBUG, "%s: Setting Bookmark successful", __FUNCTION__);
         return PVR_ERROR_NO_ERROR;
@@ -1325,16 +1328,10 @@ PVR_ERROR PVRClientMythTV::SetRecordingLastPlayedPosition(const PVR_RECORDING &r
 
 int PVRClientMythTV::GetRecordingLastPlayedPosition(const PVR_RECORDING &recording)
 {
-  //@FIXME: in some circumstances PVR calls this function in loop. To avoid
-  //        backend stressing the previous value is cached and will be returned
-  //        next time for this recording.
-  static uint64_t _recid = 0;
-  static int _bookmark = 0;
-  uint64_t recid = (static_cast<uint64_t>(recording.iChannelUid) << 32) | static_cast<uint64_t>(recording.recordingTime);
-  if (recid == _recid)
+  if (recording.iChannelUid == _cachedBookmark.channelUid && recording.recordingTime == _cachedBookmark.recordingTime)
   {
     XBMC->Log(LOG_DEBUG, "%s: Returning cached Bookmark for: %s", __FUNCTION__, recording.strTitle);
-    return _bookmark;
+    return _cachedBookmark.position;
   }
 
   if (g_bExtraDebug)
@@ -1353,11 +1350,11 @@ int PVRClientMythTV::GetRecordingLastPlayedPosition(const PVR_RECORDING &recordi
         int64_t duration = m_control->GetSavedBookmark(*prog, 2); // returns 0 if no bookmark was found
         if (duration > 0)
         {
-            _recid = recid;
-            _bookmark = (int)(duration / 1000);
+          int position = (int)(duration / 1000);
+          _cachedBookmark = { recording.iChannelUid, recording.recordingTime, position };
           if (g_bExtraDebug)
-            XBMC->Log(LOG_DEBUG, "%s: Bookmark: %d", __FUNCTION__, _bookmark);
-          return _bookmark;
+            XBMC->Log(LOG_DEBUG, "%s: %d", __FUNCTION__, position);
+          return position;
         }
       }
     }
@@ -1366,9 +1363,8 @@ int PVRClientMythTV::GetRecordingLastPlayedPosition(const PVR_RECORDING &recordi
   }
   else
     XBMC->Log(LOG_ERROR, "%s: Recording %s does not exist", __FUNCTION__, recording.strRecordingId);
-  _recid = recid;
-  _bookmark = 0;
-  return _bookmark;
+  _cachedBookmark = { recording.iChannelUid, recording.recordingTime, 0 };
+  return 0;
 }
 
 PVR_ERROR PVRClientMythTV::GetRecordingEdl(const PVR_RECORDING &recording, PVR_EDL_ENTRY entries[], int *size)
