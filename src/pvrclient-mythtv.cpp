@@ -620,7 +620,7 @@ PVR_CHANNEL PVRClientMythTV::GetFirstChannel()
   if (g_bExtraDebug)
     XBMC->Log(LOG_DEBUG, "%s", __FUNCTION__);
 
-  CLockObject lock(m_channelsLock);
+  Myth::OS::CLockGuard lock(*m_channelsLock);
   PVR_CHANNEL tag;
   memset(&tag, 0, sizeof(PVR_CHANNEL));
 

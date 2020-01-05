@@ -979,7 +979,7 @@ MythRecordingRule MythScheduleManager::RuleFromMythTimer(const MythTimerEntry& e
 
 bool MythScheduleManager::FixRule(MythRecordingRule& rule) const
 {
-  CLockObject lock(m_lock);
+  Myth::OS::CLockGuard lock(*m_lock);
   return m_versionHelper->FixRule(rule);
 }
 
